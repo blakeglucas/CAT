@@ -48,7 +48,7 @@
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "lint": "ng lint",
-    "prepare": "npm run generate_license_report && cd ../ && husky install ./UI/.husky",
+    "prepare": "npm run generate_license_report && husky install ./.husky",
     "generate_license_report": "npx license-report --only=prod,peer,opt > ./app/licenses.json"
   },
   "dependencies": {
@@ -69,7 +69,6 @@
     "kd-tree-javascript": "^1.0.3",
     "lodash": "^4.17.21",
     "mousetrap": "^1.6.5",
-    "ngx-socket-io": "^4.2.0",
     "rxjs": "7.5.5",
     "serialport": "^10.4.0",
     "three": "^0.140.2",

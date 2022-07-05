@@ -54,3 +54,6 @@ Thumbs.db
 atm_height_map.json
 dummy_height_map.json
 *.catproj
+
+package-lock.json
+yarn.lock

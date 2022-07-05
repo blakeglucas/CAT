@@ -1,0 +1,69 @@
+<div
+  #rootContainer
+  class="absolute top-8 right-0 bottom-0"
+  [ngStyle]="{ left: controlPanelOffset + 'px' }"
+>
+  <!-- <x-tabs class="float-left" (change)="onTabChange($event)">
+    <x-tab [disabled]="!(socketService.activeMachine$ | async)" value="calibration">
+      <x-label>Calibration</x-label>
+    </x-tab>
+    <x-tab disabled value="loadedHeightMap">
+      <x-label>Loaded Height Map</x-label>
+    </x-tab>
+    <x-tab value="rawGCode" selected>
+      <x-label>Raw G-Code</x-label>
+    </x-tab>
+    <x-tab value="contouredGCode">
+      <x-label>Contoured G-Code</x-label>
+    </x-tab>
+  </x-tabs> -->
+  <div
+    #tabsContainer
+    class="w-full flex flex-row justify-start border-b-white/30"
+    style="border-bottom-width: 1px"
+  >
+    <x-buttons
+      tracking="1"
+      class="button-tabs"
+      [value]="currentTab"
+      (toggle)="onTabChange($event)"
+    >
+      <x-button value="calibration">
+        <x-label>Calibration</x-label>
+      </x-button>
+      <x-button value="currentHeightMap">
+        <x-label>Current Height Map</x-label>
+      </x-button>
+      <x-button value="rawGCode">
+        <x-label>Raw G Code</x-label>
+      </x-button>
+      <x-button value="contouredGCode">
+        <x-label>Contoured G Code</x-label>
+      </x-button>
+    </x-buttons>
+  </div>
+  <app-calibration
+    [ngClass]="{ hidden: currentTab !== 'calibration' }"
+    [width]="contentWidth"
+    [height]="contentHeight"
+  ></app-calibration>
+  <app-current-height-map
+    [ngClass]="{ hidden: currentTab !== 'currentHeightMap' }"
+    [width]="contentWidth"
+    [height]="contentHeight"
+  ></app-current-height-map>
+  <app-gcode-renderer
+    [ngClass]="{ hidden: currentTab !== 'rawGCode' }"
+    [width]="contentWidth"
+    [height]="contentHeight"
+    [gCode]="gCodeService.rawGCode$ | async"
+    (contoured)="setTab('contouredGCode')"
+  ></app-gcode-renderer>
+  <app-gcode-renderer
+    [ngClass]="{ hidden: currentTab !== 'contouredGCode' }"
+    [width]="contentWidth"
+    [height]="contentHeight"
+    gCodeType="contoured"
+    [gCode]="gCodeService.cGCode$ | async"
+  ></app-gcode-renderer>
+</div>

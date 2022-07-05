@@ -1,0 +1,91 @@
+<!-- Container -->
+<div
+  [ngStyle]="{ width: width + 'px', height: height + 'px' }"
+  class="flex flex-col items-center justify-start"
+>
+  <div
+    #controlHeader
+    class="flex flex-row items-center justify-center px-4 py-2 bg-neutral-800 w-full flex-shrink-0"
+  >
+    <div
+      class="grid w-full gap-4 max-w-5xl"
+      [ngClass]="{ 'grid-cols-7': width >= 400, 'grid-cols-3': width < 400 }"
+    >
+      <app-input
+        label="X Size (mm)"
+        [(value)]="xDim"
+        [disabled]="calibrationRunning"
+      ></app-input>
+      <app-input
+        label="Y Size (mm)"
+        [(value)]="yDim"
+        [disabled]="calibrationRunning"
+      ></app-input>
+      <app-input
+        label="X Points"
+        [(value)]="xDiv"
+        [disabled]="calibrationRunning"
+      ></app-input>
+      <app-input
+        label="Y Points"
+        [(value)]="yDiv"
+        [disabled]="calibrationRunning"
+      ></app-input>
+      <app-input
+        label="Z Stepdown (mm)"
+        [(value)]="zStep"
+        [disabled]="calibrationRunning"
+      ></app-input>
+      <app-input
+        label="Z Travel Height (mm)"
+        [(value)]="zTrav"
+        [disabled]="calibrationRunning"
+      ></app-input>
+      <app-button
+        *ngIf="!calibrationRunning"
+        label="Start"
+        class="mt-5"
+        [disabled]="!canStart() || calibrationRunning"
+        (click)="startCalibration()"
+      ></app-button>
+      <app-button
+        *ngIf="calibrationRunning"
+        label="Stop"
+        class="mt-5"
+        [disabled]="!calibrationRunning"
+        (click)="stopCalibration()"
+      ></app-button>
+    </div>
+  </div>
+  <app-calibration-grid
+    [controlHeader]="controlHeader"
+    [xDim]="xDim"
+    [yDim]="yDim"
+    [xDiv]="xDiv"
+    [yDiv]="yDiv"
+    [width]="width"
+    [height]="height"
+    [resultPoints]="calibrationPoints"
+  ></app-calibration-grid>
+</div>
+<dialog hidden #confirmDialog class="mt-8">
+  <main>
+    <h1 class="text-lg font-bold">Warning</h1>
+    <p>
+      There are active calibration results loaded. Proceeding with a new
+      calibration will clear them. Continue?
+    </p>
+  </main>
+  <footer>
+    <app-button
+      label="Cancel"
+      class="mr-4"
+      (click)="cancelConfirm()"
+    ></app-button>
+    <app-button
+      label="Continue"
+      class="mr-4"
+      (click)="didConfirm()"
+    ></app-button>
+  </footer>
+</dialog>

@@ -1,0 +1,26 @@
+<p *ngIf="!(heightMapService.currentHeightMap$ | async)">
+  No current height map loaded. Use File > Load Height Map, or press
+  <x-shortcut value="Control+O H"></x-shortcut>
+</p>
+<!-- <plotly-plot *ngIf="(heightMapService.currentHeightMap$ | async)" [data]="[data]" [layout]="layout" [config]="config" [useResizeHandler]="true"></plotly-plot> -->
+<app-calibration-grid
+  *ngIf="heightMapService.currentHeightMap$ | async"
+  [width]="width"
+  [height]="height"
+  [resultPoints]="heightMapService.currentHeightMap$ | async"
+  [resultMetadata]="heightMapService.currentMetadata$ | async"
+  [additionalControls]="additionalControls"
+  [viewType]="currentView"
+></app-calibration-grid>
+<ng-template #additionalControls>
+  <div class="absolute top-8 right-8">
+    <x-button class="mt-10" (click)="changeView()"
+      ><x-icon
+        href="#toggle-{{ currentView === 'points' ? 'off' : 'on' }}"
+      ></x-icon
+      ><x-label
+        >View as {{ currentView === "points" ? "Surface" : "Points" }}</x-label
+      ></x-button
+    >
+  </div>
+</ng-template>

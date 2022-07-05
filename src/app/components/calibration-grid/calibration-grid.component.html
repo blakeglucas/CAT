@@ -1,0 +1,7 @@
+<div #threeRenderer class="h-full w-full flex-shrink overflow-hidden relative">
+  <x-button class="absolute top-8 right-8 z-10" (click)="resetView()"
+    ><x-icon href="#history-undo"></x-icon
+    ><x-label>Reset View</x-label></x-button
+  >
+  <ng-container *ngTemplateOutlet="additionalControls"></ng-container>
+</div>

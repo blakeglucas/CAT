@@ -1,0 +1,43 @@
+<div class="grid grid-cols-3 gap-6 space-y-8">
+  <div class="flex flex-row justify-center items-center col-start-2">
+    <app-machine-control-button
+      iconName="chevron-left"
+      [rotate]="true"
+      (click)="onUp()"
+      [disabled]="disabled"
+    ></app-machine-control-button>
+  </div>
+  <div></div>
+  <div
+    class="flex flex-row justify-center items-center col-start-1 row-start-2"
+  >
+    <app-machine-control-button
+      iconName="chevron-left"
+      (click)="onLeft()"
+      [disabled]="disabled"
+    ></app-machine-control-button>
+  </div>
+  <div class="flex flex-row justify-center items-center">
+    <app-machine-control-button
+      iconName="home"
+      (click)="onHome()"
+      [disabled]="disabled"
+      [loading]="homing"
+    ></app-machine-control-button>
+  </div>
+  <div class="flex flex-row justify-center items-center">
+    <app-machine-control-button
+      iconName="chevron-right"
+      (click)="onRight()"
+      [disabled]="disabled"
+    ></app-machine-control-button>
+  </div>
+  <div class="flex flex-row justify-center items-center col-start-2">
+    <app-machine-control-button
+      iconName="chevron-right"
+      [rotate]="true"
+      (click)="onDown()"
+      [disabled]="disabled"
+    ></app-machine-control-button>
+  </div>
+</div>

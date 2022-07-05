@@ -1,0 +1,10 @@
+{
+  "name": "cat",
+  "version": "0.1.0",
+  "main": "main.js",
+  "private": true,
+  "dependencies": {
+    "@angular/material": "^13.3.7",
+    "serialport": "^10.4.0"
+  }
+}

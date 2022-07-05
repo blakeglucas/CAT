@@ -1,0 +1,32 @@
+{
+  "asar": false,
+  "directories": {
+    "output": "release/"
+  },
+  "files": [
+    "**/*",
+    "!**/*.ts",
+    "!*.map",
+    "!package.json",
+    "!package-lock.json"
+  ],
+  "extraResources": [
+    {
+      "from": "dist",
+      "to": "app",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "icon": "dist/assets/icons/CATlogo.ico",
+    "target": ["portable"]
+  },
+  "mac": {
+    "icon": "dist/assets/icons/CATlogo.ico",
+    "target": ["dmg"]
+  },
+  "linux": {
+    "icon": "dist/assets/icons/CATlogo.ico",
+    "target": ["AppImage"]
+  }
+}

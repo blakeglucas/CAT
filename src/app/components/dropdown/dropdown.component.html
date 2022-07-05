@@ -1,0 +1,11 @@
+<x-label class="text-white text-sm">{{label}}</x-label>
+<x-select [value]="currentSelection" (change)="onChange($event)" class="max-w-none w-full">
+  <x-menu>
+    <x-menuitem value="" disabled>
+      <x-label>Select...</x-label>
+    </x-menuitem>
+      <x-menuitem *ngFor="let item of items" [value]="item.value">
+        <x-label>{{item.label}}</x-label>
+      </x-menuitem>
+  </x-menu>
+</x-select>

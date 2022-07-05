@@ -1,0 +1,29 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~xel/themes/fluent-dark.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+x-* {
+  max-width: unset !important;
+}
+
+.mat-simple-snackbar {
+  @apply font-sans;
+}
+
+.mat-simple-snackbar-action {
+  button {
+    @apply font-sans text-white text-xs;
+  }
+}

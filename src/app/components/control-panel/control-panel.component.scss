@@ -1,0 +1,27 @@
+.resize-handle-right {
+  position: absolute;
+  height: 100%;
+  cursor: col-resize;
+  width: 12px;
+  right: 0;
+}
+
+.mat-icon-control-button {
+  width: 48px !important;
+  height: 48px !important;
+  font-size: 48px !important;
+}
+
+.mat-spinner {
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-block !important;
+  margin-top: -8px !important;
+
+  ::ng-deep {
+    circle {
+      stroke: white !important;
+      margin-left: 8px;
+    }
+  }
+}

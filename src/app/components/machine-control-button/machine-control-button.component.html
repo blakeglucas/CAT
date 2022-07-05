@@ -1,0 +1,12 @@
+<x-button
+  class="max-w-none rounded-full w-12 h-12"
+  [disabled]="disabled || loading"
+>
+  <x-icon
+    *ngIf="!loading"
+    href="#{{ iconName }}"
+    class="rotate-{{ rotate ? 90 : 0 }}"
+    size="larger"
+  ></x-icon>
+  <x-throbber *ngIf="loading" size="larger"></x-throbber>
+</x-button>

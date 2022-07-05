@@ -1,0 +1,20 @@
+<dialog hidden #dialog class="mt-8 z-50">
+  <main>
+    <h1 class="text-lg font-bold">Open-Source Licenses</h1>
+    <ul>
+      <li *ngFor="let license of licenses">
+        <b>{{ license.name }}</b> @ {{ license.installedVersion }} by
+        {{ license.author || "No Author" }}, {{ license.licenseType }},
+        <a
+          [href]="getLink(license.link)"
+          target="_blank"
+          rel="noopener noreferrer"
+          >{{ license.link }}</a
+        >
+      </li>
+    </ul>
+  </main>
+  <footer>
+    <app-button label="Close" class="mr-4" (click)="close.emit()"></app-button>
+  </footer>
+</dialog>

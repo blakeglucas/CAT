@@ -3,6 +3,8 @@
   "directories": {
     "output": "release/"
   },
+  "artifactName": "CATsetup.${version}.${arch}.${ext}",
+  "productName": "CNC Auto-Leveling Tool (CAT)",
   "files": [
     "**/*",
     "!**/*.ts",
@@ -18,15 +20,20 @@
     }
   ],
   "win": {
-    "icon": "dist/assets/icons/CATlogo.ico",
-    "target": ["portable"]
+    "icon": "dist/assets/icons/win/icon.ico",
+    "target": ["portable", "nsis", "msi"]
   },
   "mac": {
-    "icon": "dist/assets/icons/CATlogo.ico",
+    "icon": "dist/assets/icons/mac/icon.icns",
     "target": ["dmg"]
   },
   "linux": {
-    "icon": "dist/assets/icons/CATlogo.ico",
+    "icon": "dist/assets/icons/png",
     "target": ["AppImage"]
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "uninstallDisplayName": "CNC Auto-Leveling Tool (CAT) v${version}"
   }
 }

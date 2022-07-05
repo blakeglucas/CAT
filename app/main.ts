@@ -30,7 +30,8 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: serve ? true : false,
-      contextIsolation: false, // false if you want to run e2e test with Spectron
+      contextIsolation: false, // false if you want to run e2e test with Spectron,
+      devTools: serve ? true : false,
     },
     darkTheme: true,
     frame: false,
@@ -65,6 +66,8 @@ function createWindow(): BrowserWindow {
     e.preventDefault();
     require('electron').shell.openExternal(url);
   });
+
+  win.setTitle('CNC Auto-Leveling Tool')
 
   // Emitted when the window is closed.
   win.on('closed', () => {

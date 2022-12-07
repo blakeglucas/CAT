@@ -82,7 +82,9 @@ export class HeightMapService {
     calResult: number[][][],
     metadata: HeightMapMetadata
   ) {
+    console.log(calResult)
     const nData = this.normalize(calResult);
+    console.log(nData)
     this._currentHeightMap.next(nData);
     this._currentMetadata.next(metadata);
   }

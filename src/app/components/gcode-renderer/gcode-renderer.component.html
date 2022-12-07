@@ -2,18 +2,23 @@
 <x-button *ngIf="dirty" class="absolute top-16 right-8" (click)="resetView()"
   ><x-icon href="#history-undo"></x-icon><x-label>Reset View</x-label></x-button
 >
-<div *ngIf="gCodeType === 'raw'" class="absolute grid grid-cols-1 top-16 left-8">
+<div
+  *ngIf="gCodeType === 'raw'"
+  class="absolute grid grid-cols-1 top-16 left-8"
+>
   <x-button *ngIf="!gCode" (click)="triggerFileOpen()"
     ><x-icon href="#folder"></x-icon
     ><x-label>No G-Code loaded. Click to select a file...</x-label></x-button
   >
-  <x-button [disabled]="!(heightMapService.currentHeightMap$ | async) || !gCode" (click)="performContour()"
+  <x-button
+    [disabled]="!(heightMapService.currentHeightMap$ | async) || !gCode"
+    (click)="performContour()"
     ><x-icon href="#wrench"></x-icon
     ><x-label
       >Calculate Contoured G-Code from Height Map and Raw G-Code</x-label
     ></x-button
   >
-  <x-button *ngIf="gCode" (click)="clearGCode()"
+  <x-button *ngIf="gCode" (click)="clearGCode()" class="mt-2"
     ><x-icon href="#delete"></x-icon><x-label>Clear G-Code</x-label></x-button
   >
 </div>
@@ -28,4 +33,17 @@
   <x-button *ngIf="gCode" (click)="clearGCode()"
     ><x-icon href="#delete"></x-icon><x-label>Clear G-Code</x-label></x-button
   >
+  <app-input
+    label="Target Z Depth"
+    [(value)]="targetZ"
+    [disabled]="!(heightMapService.currentHeightMap$ | async) || !gCode"
+    [isNumber]="true"
+  ></app-input>
+  <x-button *ngIf="gCode" (click)="performContour()"
+    ><x-icon href="#history-redo"></x-icon><x-label>Refresh</x-label></x-button
+  >
 </div>
+<div
+  *ngIf="gCodeType === 'raw'"
+  class="absolute grid grid-cols-1 top-16 left-8"
+></div>

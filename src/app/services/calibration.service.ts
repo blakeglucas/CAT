@@ -86,6 +86,10 @@ export class CalibrationService extends IPCRendererBase {
     this._calParams = { ...val };
   }
 
+  get hasResults() {
+    return this.heightMap.length > 0;
+  }
+
   async start(params: CalibrationParams) {
     this.calParams = {
       ...params,
@@ -114,82 +118,86 @@ export class CalibrationService extends IPCRendererBase {
     this.abortController.signal.addEventListener('abort', () => {
       this.state = CALIBRATION_STATE.STOPPED;
     });
-    while (
-      this.cY <= this.calParams.y &&
-      this.state === CALIBRATION_STATE.RUNNING
-    ) {
-      this.rowMap = [];
+    const DEBUG_heightMap = localStorage.getItem('DEBUG_heightMap');
+    if (!DEBUG_heightMap) {
+      this.heightMap = []
       while (
-        this.cX <= this.calParams.x &&
+        this.cY <= this.calParams.y &&
         this.state === CALIBRATION_STATE.RUNNING
       ) {
-        this.zResults = [];
-        await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-          z: this.calParams.ztrav,
-        });
-        await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-          x: this.cX,
-        });
-        // Required to prevent skipping position bc switch race condition
-        await sleep(1500);
-        this.switchTrigger = false;
-        let i = 0;
+        this.rowMap = [];
         while (
-          !this.switchTrigger &&
+          this.cX <= this.calParams.x &&
           this.state === CALIBRATION_STATE.RUNNING
         ) {
-          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
-            z: -1 * Math.abs(this.calParams.zstep),
+          this.zResults = [];
+          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+            z: this.calParams.ztrav,
           });
-          await sleep(600);
-          i++;
+          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+            x: this.cX,
+          });
+          // Required to prevent skipping position bc switch race condition
+          await sleep(1500);
+          this.switchTrigger = false;
+          let i = 0;
+          while (
+            !this.switchTrigger &&
+            this.state === CALIBRATION_STATE.RUNNING
+          ) {
+            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
+              z: -1 * Math.abs(this.calParams.zstep),
+            });
+            await sleep(500);
+            i++;
+          }
+          if (this.state !== CALIBRATION_STATE.RUNNING) {
+            return;
+          }
+          this.switchTrigger = false;
+          const rawPosition: string = await this.serialService.sendCommand(
+            SERIAL_COMMAND.GET_POSITION
+          );
+          const position = rawPosition
+            .split(' ')
+            .slice(0, 3)
+            .map((x) => {
+              const parts = x.split(':');
+              return Number(parts[parts.length - 1]);
+            });
+          this.appendToPoints([this.cX, this.cY, position[2]]);
+          this.rowMap.push([this.cX, this.cY, position[2]]);
+          this.cX += this.dX;
         }
         if (this.state !== CALIBRATION_STATE.RUNNING) {
           return;
         }
-        this.switchTrigger = false;
-        const rawPosition: string = await this.serialService.sendCommand(
-          SERIAL_COMMAND.GET_POSITION
-        );
-        const position = rawPosition
-          .split(' ')
-          .slice(0, 3)
-          .map((x) => {
-            const parts = x.split(':');
-            return Number(parts[parts.length - 1]);
+        this.cY += this.dY;
+        this.heightMap.push(this.rowMap);
+        if (this.cY > this.calParams.y) {
+          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
+            z: 15,
           });
-        this.appendToPoints([this.cX, this.cY, position[2]]);
-        this.rowMap.push([this.cX, this.cY, position[2]]);
-        this.cX += this.dX;
+          break;
+        } else {
+          this.cX = 0;
+          this.zResults = [];
+          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+            z: this.calParams.ztrav,
+          });
+          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+            y: this.cY,
+          });
+        }
       }
-      if (this.state !== CALIBRATION_STATE.RUNNING) {
-        return;
-      }
-      this.cY += this.dY;
-      this.heightMap.push(this.rowMap);
-      if (this.cY > this.calParams.y) {
-        await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
-          z: 15,
-        });
-        break;
-      } else {
-        this.cX = 0;
-        this.zResults = [];
-        await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-          z: this.calParams.ztrav,
-        });
-        await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-          y: this.cY,
-        });
-      }
+    } else {
+      this.heightMap = JSON.parse(DEBUG_heightMap);
     }
-    this.heightMapService.loadHeightMapFromCalibration(this.heightMap, {
-      x: this.calParams.x,
-      y: this.calParams.y,
-      xpoints: this.calParams.xn,
-      ypoints: this.calParams.yn,
-      timestamp: new Date().toUTCString(),
-    });
+    console.log(this.heightMap);
+    localStorage.removeItem('DEBUG_heightMap')
+    // localStorage.setItem('DEBUG_heightMap', JSON.stringify(this.heightMap));
+    this.sendToHeightMap();
+    this.state = CALIBRATION_STATE.STOPPED;
     this.calParams.onComplete();
   }
 
@@ -207,5 +215,18 @@ export class CalibrationService extends IPCRendererBase {
 
   clear() {
     this._points.next([]);
+  }
+
+  sendToHeightMap() {
+    const metadata = {
+      x: this.calParams.x,
+      y: this.calParams.y,
+      xpoints: this.calParams.xn,
+      ypoints: this.calParams.yn,
+      timestamp: new Date().toUTCString(),
+    };
+    const DEBUG_metadata = localStorage.getItem('DEBUG_metadata');
+    this.heightMapService.loadHeightMapFromCalibration(this.heightMap, DEBUG_metadata ? JSON.parse(DEBUG_metadata) : metadata);
+    // localStorage.setItem('DEBUG_metadata', JSON.stringify(metadata));
   }
 }

@@ -11,6 +11,7 @@ import {
 } from './marlin';
 import { writeSerial, readSerial } from './serial';
 import { SwitchPort } from './SwitchPort';
+import { contourGCode } from './contourGCode';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -421,6 +422,17 @@ try {
       win.webContents.send('serial:command', undefined, result);
     }
   );
+
+  ipcMain.on('gcode:contour', async (event, gcode: string, heightMap: number[][], targetZdepth: number) => {
+    try {
+      console.log('ipc handler')
+      const cgcode = await contourGCode(gcode, heightMap, targetZdepth)
+      win.webContents.send('gcode:contour', cgcode)
+    }
+    catch (e) {
+      console.log(e)
+    }
+  })
 
   ipcMain.on('licenses', async () => {
     const data = await fs.promises.readFile(

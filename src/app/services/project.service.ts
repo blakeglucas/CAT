@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { GCodeObject } from '../utils/contourGCode';
 import { IPCRendererBase } from '../utils/IPCRendererBase';
 import { CalibrationService } from './calibration.service';
 import { GcodeService } from './gcode.service';

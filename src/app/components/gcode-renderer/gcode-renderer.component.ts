@@ -24,7 +24,6 @@ import { TextSprite } from '../../utils/threejs/TextSprite';
 import { HeightMapService } from '../../services/height-map.service';
 import { ElectronService } from '../../services/electron.service';
 import { GcodeService } from '../../services/gcode.service';
-import { contourGCode, GCodeObject } from '../../utils/contourGCode';
 
 @Component({
   selector: 'app-gcode-renderer',
@@ -42,11 +41,21 @@ export class GcodeRendererComponent
   @ViewChild('renderContainer', { read: ElementRef })
   renderContainer: ElementRef<HTMLDivElement>;
 
+  private _targetZ = -0.05;
+
+  get targetZ() {
+    return this._targetZ
+  }
+
+  set targetZ(val: any) {
+    this._targetZ = val;
+  }
+
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
   private renderer: THREE.WebGLRenderer;
   private controls: Controls;
-  private readonly gCodeLoader: GCodeLoader;
+  private gCodeLoader: GCodeLoader;
 
   private gCodeGroup: THREE.Group;
 
@@ -57,7 +66,6 @@ export class GcodeRendererComponent
     private cdr: ChangeDetectorRef
   ) {
     this.animate = this.animate.bind(this);
-    this.gCodeLoader = new GCodeLoader();
     this.initRender();
   }
 
@@ -65,7 +73,9 @@ export class GcodeRendererComponent
     return this.controls.touched;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.gCodeLoader = new GCodeLoader(undefined, this.gCodeType === 'contoured' ? 30 : 1);
+  }
 
   initRender() {
     this.camera = new THREE.PerspectiveCamera(
@@ -208,21 +218,20 @@ export class GcodeRendererComponent
   clearGCode() {
     if (this.gCodeType === 'raw') {
       this.gCodeService.clearRawGCode();
-    } else if (this.gCodeType == 'contoured') {
+    } else if (this.gCodeType === 'contoured') {
       this.gCodeService.clearCGCode();
     }
     this.cdr.detectChanges();
   }
 
-  performContour() {
-    if (this.gCodeType === 'contoured') {
+  async performContour() {
+    if (this.gCodeType === 'contoured' && !this.gCode) {
       return;
     }
-    const gCodeLines = contourGCode(
-      new GCodeObject(this.gCode),
+    const gCodeLines = await this.gCodeService.contourGCode(
       this.heightMapService.currentHeightMap,
-      -1
-    ).filter((a) => !!a);
+      this.targetZ
+    );
     const cGCode = gCodeLines.map((line) => line.repr()).join('\n');
     this.gCodeService.setCGCode(cGCode, undefined);
     this.contoured.emit();

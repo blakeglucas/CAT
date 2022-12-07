@@ -2,10 +2,12 @@ import * as THREE from 'three';
 
 export class GCodeLoader extends THREE.Loader {
   splitLayer: boolean;
+  scaleZ: number
 
-  constructor(manager = THREE.DefaultLoadingManager) {
+  constructor(manager = THREE.DefaultLoadingManager, scaleZ = 1) {
     super(manager);
     this.splitLayer = false;
+    this.scaleZ = scaleZ
   }
 
   load(url, onLoad, onProgress, onError) {
@@ -64,7 +66,15 @@ export class GCodeLoader extends THREE.Loader {
       layers.push(currentLayer);
     } //Create lie segment between p1 and p2
 
+    const scaleZ = this.scaleZ
+
     function addSegment(p1, p2) {
+      if (Math.abs(p1.z) >= 2 * scaleZ) {
+        p1.z /= scaleZ
+      }
+      if (Math.abs(p2.z) >= 2 * scaleZ) {
+         p2.z /= scaleZ
+      }
       if (currentLayer === undefined) {
         newLayer(p1);
       }
@@ -108,11 +118,11 @@ export class GCodeLoader extends THREE.Loader {
       }); //Process commands
       //G0/G1 – Linear Movement
 
-      if (cmd === 'G0' || cmd === 'G1' || cmd === 'G00' || cmd === 'G01') {
+      if (cmd === 'G0' || cmd === 'G00' || cmd === 'G1' || cmd === 'G01') {
         const line = {
           x: args.x !== undefined ? absolute(state.x, args.x) : state.x,
           y: args.y !== undefined ? absolute(state.y, args.y) : state.y,
-          z: args.z !== undefined ? absolute(state.z, args.z) : state.z,
+          z: (args.z !== undefined ? absolute(state.z, args.z) : state.z) * this.scaleZ,
           e: args.e !== undefined ? absolute(state.e, args.e) : state.e,
           f: args.f !== undefined ? absolute(state.f, args.f) : state.f,
         }; //Layer change detection is or made by watching Z, it's made by watching when we extrude at a new Z position
@@ -120,7 +130,7 @@ export class GCodeLoader extends THREE.Loader {
         if (delta(state.e, line.e) > 0) {
           state.extruding = delta(state.e, line.e) > 0;
 
-          if (currentLayer == undefined || line.z != currentLayer.z) {
+          if (currentLayer === undefined) {
             newLayer(line);
           }
         }

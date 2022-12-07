@@ -33,7 +33,7 @@ export class ControlPanelComponent implements OnInit {
   _cncPort = '';
   _cncBaud = 115200;
   _switchPort = '';
-  _switchBaud = 9600;
+  _switchBaud = 115200;
 
   cncDropdownOptions: Observable<DropdownItem[]>;
   localSerialDropdownOptions: Observable<DropdownItem[]>;
@@ -63,7 +63,7 @@ export class ControlPanelComponent implements OnInit {
         this._cncPort = this.serialService.cncPort || '';
         this._cncBaud = this.serialService.cncPortBaud || 115200;
         this._switchPort = this.serialService.switchPort || '';
-        this._switchBaud = this.serialService.switchPortBaud || 9600;
+        this._switchBaud = this.serialService.switchPortBaud || 115200;
       },
     });
   }

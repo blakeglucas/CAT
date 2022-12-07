@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { ipcRenderer } from 'electron';
 import { BehaviorSubject } from 'rxjs';
+import { GCodeLine } from '../utils/gcode';
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +13,14 @@ export class GcodeService {
   private readonly _cGCode = new BehaviorSubject<string>('');
   readonly cGCode$ = this._cGCode.asObservable();
 
+  private ipcRenderer: typeof ipcRenderer;
+
   rawFilePath = '';
   cFilePath = '';
 
-  constructor() {}
+  constructor() {
+    this.ipcRenderer = window.require('electron').ipcRenderer;
+  }
 
   get rawGCode() {
     return this._rawGCode.getValue();
@@ -53,5 +59,16 @@ export class GcodeService {
 
   clearCGCode() {
     this._cGCode.next('');
+  }
+
+  async contourGCode(heightMap: number[][], targetZdepth: number) {
+    const cgcode = await new Promise<string>((resolve, reject) => {
+      this.ipcRenderer.once('gcode:contour', (event, result: string) => {
+        resolve(result)
+      })
+      this.ipcRenderer.send('gcode:contour', this.rawGCode, heightMap, targetZdepth)
+    })
+    console.log(cgcode)
+    return cgcode.split(/\r?\n/).map(line => new GCodeLine(line))
   }
 }

@@ -13,5 +13,5 @@
     "resolveJsonModule": true
   },
   "files": ["app/main.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts", "**/py/**/*"]
 }

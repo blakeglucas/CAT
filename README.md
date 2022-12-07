@@ -20,4 +20,4 @@ I have butchered a fair few CNC bits developing this technique. By using or extr
 
 ## Logo Credits
 
-CAT Logo extrapolated from [anggasaputro on Vecteezy](https://www.vecteezy.com/free-vector/cat-logo).
+CAT Logo extrapolated from [anggasaputro on Vecteezy](https://www.vecteezy.com/vector-art/6917283-cat-logo-and-vector-animal-icon-footprint-kitten-calico-logo-dog-symbol-cartoon-character-sign-illustration-doodle-design) -- <a href="https://www.vecteezy.com/free-vector/cat-logo">Cat Logo Vectors by Vecteezy</a>.

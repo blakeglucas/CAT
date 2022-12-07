@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import colorNames from 'colornames';
 import { map, Observable, Subscription } from 'rxjs';
+import { CalibrationService } from '../../services/calibration.service';
 import { HeightMapService } from '../../services/height-map.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class CurrentHeightMapComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     public heightMapService: HeightMapService,
+    public calibrationService: CalibrationService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -37,5 +39,9 @@ export class CurrentHeightMapComponent implements OnInit, OnChanges, OnDestroy {
 
   changeView() {
     this.currentView = this.currentView === 'points' ? 'surface' : 'points';
+  }
+
+  refreshFromCalibration() {
+    this.calibrationService.sendToHeightMap();
   }
 }

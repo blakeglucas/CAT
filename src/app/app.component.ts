@@ -11,6 +11,7 @@ import { APP_CONFIG } from '../environments/environment';
 
 import { SocketService } from './services/socket.service';
 import { ErrorService } from './services/error.service';
+import { GcodeService } from './services/gcode.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,8 @@ export class AppComponent implements AfterViewInit {
     private electronService: ElectronService,
     private translate: TranslateService,
     public socketService: SocketService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private gcodeService: GcodeService
   ) {
     this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);

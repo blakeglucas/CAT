@@ -13,7 +13,7 @@
   [viewType]="currentView"
 ></app-calibration-grid>
 <ng-template #additionalControls>
-  <div class="absolute top-8 right-8">
+  <div class="absolute top-8 right-8 flex flex-col items-end">
     <x-button class="mt-10" (click)="changeView()"
       ><x-icon
         href="#toggle-{{ currentView === 'points' ? 'off' : 'on' }}"
@@ -22,5 +22,8 @@
         >View as {{ currentView === "points" ? "Surface" : "Points" }}</x-label
       ></x-button
     >
+    <x-button class="mt-2" (click)="refreshFromCalibration()" *ngIf="calibrationService.hasResults">
+      <x-label>Refresh from Calibration</x-label>
+    </x-button>
   </div>
 </ng-template>

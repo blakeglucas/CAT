@@ -25,7 +25,8 @@ export class InputComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disabled = false;
   @Input() label;
 
-  @Input() value: string | number = '';
+  @Input() value = '';
+  @Input() isNumber = false;
   @Output() valueChange = new EventEmitter();
 
   constructor(private cdr: ChangeDetectorRef) {}
@@ -39,15 +40,23 @@ export class InputComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value']) {
+      this.value = changes['value'].currentValue
+    }
     this.cdr.detectChanges();
   }
 
   onChange(event: Event) {
-    if (typeof this.value === 'number') {
-      const nVal = Number((event.target as HTMLInputElement).value);
-      this.valueChange.emit(nVal);
+    const target = event.target as HTMLInputElement;
+    this.value = target.value
+  }
+
+  blur(event: FocusEvent) {
+    if (this.isNumber) {
+      const nVal = Number(this.value)
+      this.valueChange.emit(nVal)
     } else {
-      this.valueChange.emit((event.target as HTMLInputElement).value);
+      this.valueChange.emit(this.value)
     }
   }
 }

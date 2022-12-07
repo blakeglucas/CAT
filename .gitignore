@@ -57,3 +57,5 @@ dummy_height_map.json
 
 package-lock.json
 yarn.lock
+
+__pycache__/

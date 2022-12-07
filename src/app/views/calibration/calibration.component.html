@@ -15,31 +15,37 @@
         label="X Size (mm)"
         [(value)]="xDim"
         [disabled]="calibrationRunning"
+        [isNumber]="true"
       ></app-input>
       <app-input
         label="Y Size (mm)"
         [(value)]="yDim"
         [disabled]="calibrationRunning"
+        [isNumber]="true"
       ></app-input>
       <app-input
         label="X Points"
         [(value)]="xDiv"
         [disabled]="calibrationRunning"
+        [isNumber]="true"
       ></app-input>
       <app-input
         label="Y Points"
         [(value)]="yDiv"
         [disabled]="calibrationRunning"
+        [isNumber]="true"
       ></app-input>
       <app-input
         label="Z Stepdown (mm)"
         [(value)]="zStep"
         [disabled]="calibrationRunning"
+        [isNumber]="true"
       ></app-input>
       <app-input
         label="Z Travel Height (mm)"
         [(value)]="zTrav"
         [disabled]="calibrationRunning"
+        [isNumber]="true"
       ></app-input>
       <app-button
         *ngIf="!calibrationRunning"

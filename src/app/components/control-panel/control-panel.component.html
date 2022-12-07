@@ -147,6 +147,7 @@
           class="col-span-{{ width >= 400 ? '2' : '4' }}"
           [value]="cncBaud"
           (valuechange)="cncBaud = $event"
+          [isNumber]="true"
         ></app-input>
         <app-dropdown
           label="UART Switch Port"
@@ -160,6 +161,7 @@
           class="col-span-{{ width >= 400 ? '2' : '4' }}"
           [value]="switchBaud"
           (valuechange)="switchBaud = $event"
+          [isNumber]="true"
         ></app-input>
       </div>
       <div class="flex flex-row items-center justify-center my-4">

@@ -62,7 +62,7 @@ export class CalibrationComponent implements OnInit {
     return this.calibrationService.xDim;
   }
 
-  set xDim(val: number) {
+  set xDim(val: any) {
     this.calibrationService.xDim = val;
   }
 
@@ -70,7 +70,7 @@ export class CalibrationComponent implements OnInit {
     return this.calibrationService.yDim;
   }
 
-  set yDim(val: number) {
+  set yDim(val: any) {
     this.calibrationService.yDim = val;
   }
 
@@ -78,7 +78,7 @@ export class CalibrationComponent implements OnInit {
     return this.calibrationService.xDiv;
   }
 
-  set xDiv(val: number) {
+  set xDiv(val: any) {
     this.calibrationService.xDiv = val;
   }
 
@@ -86,7 +86,7 @@ export class CalibrationComponent implements OnInit {
     return this.calibrationService.yDiv;
   }
 
-  set yDiv(val: number) {
+  set yDiv(val: any) {
     this.calibrationService.yDiv = val;
   }
 
@@ -94,7 +94,7 @@ export class CalibrationComponent implements OnInit {
     return this.calibrationService.zTrav;
   }
 
-  set zTrav(val: number) {
+  set zTrav(val: any) {
     this.calibrationService.zTrav = val;
   }
 
@@ -102,7 +102,7 @@ export class CalibrationComponent implements OnInit {
     return this.calibrationService.zStep;
   }
 
-  set zStep(val: number) {
+  set zStep(val: any) {
     this.calibrationService.zStep = val;
   }
 

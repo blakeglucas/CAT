@@ -57,10 +57,12 @@
   },
   "dependencies": {
     "@iconscout/react-unicons": "^1.1.6",
+    "@popperjs/core": "^2.11.6",
     "clsx": "^1.2.1",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-popper": "^2.3.0",
     "react-rnd": "^10.3.7",
     "react-router": "^6.4.5",
     "react-router-dom": "^6.4.5"

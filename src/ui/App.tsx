@@ -10,7 +10,7 @@ import { RawGCodePage } from './pages/RawGCode';
 import { ContouredGCodePage } from './pages/ContouredGCode';
 
 export default function App() {
-  const [siderWidth, setSiderWidth] = React.useState(250);
+  const [siderWidth, setSiderWidth] = React.useState(400);
 
   React.useEffect(console.log, [siderWidth]);
 

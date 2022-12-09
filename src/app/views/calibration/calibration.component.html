@@ -95,3 +95,23 @@
     ></app-button>
   </footer>
 </dialog>
+<dialog hidden #resumeDialog class="mt-8">
+  <main>
+    <h1 class="text-lg font-bold">Warning</h1>
+    <p>
+      There is a saved calibration in progress. This may happen when a calibration times out before finishing. Do you want to resume the previous calibration?
+    </p>
+  </main>
+  <footer>
+    <app-button
+      label="Cancel"
+      class="mr-4"
+      (click)="cancelConfirm()"
+    ></app-button>
+    <app-button
+      label="Continue"
+      class="mr-4"
+      (click)="didConfirm()"
+    ></app-button>
+  </footer>
+</dialog>

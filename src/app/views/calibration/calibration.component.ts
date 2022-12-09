@@ -33,6 +33,8 @@ export class CalibrationComponent implements OnInit {
   controlHeader: ElementRef<HTMLDivElement>;
   @ViewChild('confirmDialog', { read: ElementRef })
   confirmDialog: ElementRef<HTMLDialogElement>;
+  @ViewChild('confirmDialog', { read: ElementRef })
+  resumeDialog: ElementRef<HTMLDialogElement>;
 
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
@@ -167,6 +169,16 @@ export class CalibrationComponent implements OnInit {
     this.confirmDialog.nativeElement.setAttribute('hidden', 'true');
   }
 
+  showResumeDialog() {
+    this.confirmDialog.nativeElement.removeAttribute('hidden');
+    this.confirmDialog.nativeElement.setAttribute('open', 'true');
+  }
+
+  closeResumeDialog() {
+    this.confirmDialog.nativeElement.removeAttribute('open');
+    this.confirmDialog.nativeElement.setAttribute('hidden', 'true');
+  }
+
   cancelConfirm() {
     this.closeConfimDialog();
   }
@@ -175,5 +187,9 @@ export class CalibrationComponent implements OnInit {
     this.closeConfimDialog();
     this.calibrationService.clear();
     this.startCalibration();
+  }
+
+  noResume() {
+    
   }
 }

@@ -58,13 +58,18 @@
   "dependencies": {
     "@iconscout/react-unicons": "^1.1.6",
     "@popperjs/core": "^2.11.6",
+    "@reduxjs/toolkit": "^1.9.1",
     "clsx": "^1.2.1",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropdown-select": "^4.9.0",
     "react-popper": "^2.3.0",
+    "react-redux": "^8.0.5",
     "react-rnd": "^10.3.7",
     "react-router": "^6.4.5",
-    "react-router-dom": "^6.4.5"
+    "react-router-dom": "^6.4.5",
+    "redux-persist": "^6.0.0",
+    "serialport": "^10.5.0"
   }
 }

@@ -8,11 +8,17 @@ import { CalibrationPage } from './pages/Calibration';
 import CurrentHeightMapPage from './pages/CurrentHeightMap';
 import { RawGCodePage } from './pages/RawGCode';
 import { ContouredGCodePage } from './pages/ContouredGCode';
+import { useDispatch } from './store/hooks';
+import { getSerialPorts } from './store/thunks/serial.thunk'
 
 export default function App() {
   const [siderWidth, setSiderWidth] = React.useState(400);
 
-  React.useEffect(console.log, [siderWidth]);
+  const dispatch = useDispatch()
+
+  React.useEffect(() => {
+    dispatch(getSerialPorts())
+  }, [])
 
   return (
     <>

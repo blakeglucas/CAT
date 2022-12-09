@@ -32,7 +32,8 @@ def contour_gcode(obj: GCodeObject, height_map, target_z_depth: float):
         nn1, nn2, nn3, nn4 = [height_map[j] for j in i.tolist()]
         x1, y1, z1 = nn1; x2, y2, z2 = nn2; x3, y3, z3 = nn3; x4, y4, z4 = nn4
         f = interpolate.interp2d([x1, x2, x3, x4], [y1, y2, y3, y4], [z1, z2, z3, z4])
-        return f(x, y)[0]
+        result = f(x, y)
+        return result[0]
 
     for line in contoured_obj.gcode_lines:
         if (line.cmd == 'G0' or line.cmd == 'G00') and line.x is None and line.y is None and line.z >= 0:

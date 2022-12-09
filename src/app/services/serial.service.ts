@@ -116,9 +116,16 @@ export class SerialService extends IPCRendererBase implements ISerialService {
     this.switchPort = portPath;
   }
 
-  async sendCommand(cmd: SERIAL_COMMAND, params?: SERIAL_PARAMS): Promise<any> {
+  async sendCommand(
+    cmd: SERIAL_COMMAND,
+    params?: SERIAL_PARAMS,
+    timeoutMS = 10000
+  ): Promise<any> {
     const eventTag = 'serial:command';
     return await new Promise<any>((resolve, reject) => {
+      setTimeout(() => {
+        throw new SerialTimeoutError(cmd, params);
+      }, timeoutMS);
       this.ipcRenderer.once(eventTag, (event, err, result) => {
         if (err) {
           console.log(err);
@@ -129,5 +136,15 @@ export class SerialService extends IPCRendererBase implements ISerialService {
       });
       this.ipcRenderer.send(eventTag, cmd, params);
     });
+  }
+}
+
+export class SerialTimeoutError extends Error {
+  constructor(cmd: SERIAL_COMMAND, params?: SERIAL_PARAMS) {
+    super(
+      `SerialTimeoutError: command "${
+        SERIAL_COMMAND[cmd]
+      } failed with params: ${params ? JSON.stringify(params) : 'none'}`
+    );
   }
 }

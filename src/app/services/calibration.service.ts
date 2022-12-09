@@ -1,16 +1,22 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
 import { IPCRendererBase } from '../utils/IPCRendererBase';
-import { SerialService } from './serial.service';
+import { SerialService, SerialTimeoutError } from './serial.service';
 import { SERIAL_COMMAND } from '../interfaces/SerialService.interface';
 import { sleep } from '../utils/sleep';
 import { BehaviorSubject } from 'rxjs';
 import { HeightMap, HeightMapService } from './height-map.service';
+import { ErrorService } from './error.service';
+import { NotificationService } from './notification.service';
 
 enum CALIBRATION_STATE {
   IDLE = 0,
   RUNNING,
   STOPPING,
   STOPPED,
+  PAUSED,
 }
 
 type CalibrationParams = {
@@ -34,7 +40,6 @@ export class CalibrationService extends IPCRendererBase {
   private cX = 0;
   private heightMap: number[][][] = [];
   private rowMap: number[][] = [];
-  private zResults: number[] = [];
   private dX = 0;
   private dY = 0;
 
@@ -44,6 +49,7 @@ export class CalibrationService extends IPCRendererBase {
   private abortController: AbortController;
 
   private readonly _points = new BehaviorSubject<number[][]>([]);
+
   readonly points$ = this._points.asObservable();
 
   xDim = 20;
@@ -52,19 +58,6 @@ export class CalibrationService extends IPCRendererBase {
   yDiv = 5;
   zStep = 0.1;
   zTrav = 1;
-
-  constructor(
-    private serialService: SerialService,
-    private heightMapService: HeightMapService
-  ) {
-    super();
-    this.start = this.start.bind(this);
-    this.run = this.run.bind(this);
-    this.ipcRenderer.on('serial:switch_trigger', (event, value) => {
-      this.switchTrigger = true;
-    });
-    this.abortController = new AbortController();
-  }
 
   get points() {
     return this._points.getValue();
@@ -90,6 +83,23 @@ export class CalibrationService extends IPCRendererBase {
     return this.heightMap.length > 0;
   }
 
+  constructor(
+    private serialService: SerialService,
+    private heightMapService: HeightMapService,
+    private notificationService: NotificationService
+  ) {
+    super();
+    this.start = this.start.bind(this);
+    this.run = this.run.bind(this);
+    this.ipcRenderer.on('serial:switch_trigger', (event, value) => {
+      this.switchTrigger = true;
+    });
+    this.abortController = new AbortController();
+    this.abortController.signal.addEventListener('abort', () => {
+      this.state = CALIBRATION_STATE.STOPPED;
+    });
+  }
+
   async start(params: CalibrationParams) {
     this.calParams = {
       ...params,
@@ -102,101 +112,125 @@ export class CalibrationService extends IPCRendererBase {
     await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
       z: this.calParams.ztrav,
     });
-    this.cY = 0;
-    this.cX = 0;
-    this.rowMap = [];
-    this.zResults = [];
+    // Number(null) === 0, no need for default
+    this.cY = Number(localStorage.getItem('cY'));
+    this.cX = Number(localStorage.getItem('cX'));
+    this.rowMap = localStorage.getItem('rowMap')
+      ? JSON.parse(localStorage.getItem('rowMap'))
+      : [];
+    this.heightMap = localStorage.getItem('heightMap')
+      ? JSON.parse(localStorage.getItem('heightMap'))
+      : [];
     this.switchTrigger = false;
     this.state = CALIBRATION_STATE.RUNNING;
     this.run();
   }
 
   async run() {
+    // TODO: why?
     if (this.state !== CALIBRATION_STATE.RUNNING) {
       return;
     }
-    this.abortController.signal.addEventListener('abort', () => {
-      this.state = CALIBRATION_STATE.STOPPED;
-    });
     const DEBUG_heightMap = localStorage.getItem('DEBUG_heightMap');
     if (!DEBUG_heightMap) {
-      this.heightMap = []
+      this.setHeightMap([]);
+      let accurateWorkOriginSet = false;
       while (
         this.cY <= this.calParams.y &&
         this.state === CALIBRATION_STATE.RUNNING
       ) {
-        this.rowMap = [];
-        while (
-          this.cX <= this.calParams.x &&
-          this.state === CALIBRATION_STATE.RUNNING
-        ) {
-          this.zResults = [];
-          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-            z: this.calParams.ztrav,
-          });
-          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-            x: this.cX,
-          });
-          // Required to prevent skipping position bc switch race condition
-          await sleep(1500);
-          this.switchTrigger = false;
-          let i = 0;
+        try {
+          localStorage.setItem('cY', `${this.cY}`);
+          this.rowMap = [];
           while (
-            !this.switchTrigger &&
+            this.cX <= this.calParams.x &&
             this.state === CALIBRATION_STATE.RUNNING
           ) {
-            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
-              z: -1 * Math.abs(this.calParams.zstep),
+            localStorage.setItem('cX', `${this.cX}`);
+            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+              z: this.calParams.ztrav,
             });
-            await sleep(500);
-            i++;
+            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+              x: this.cX,
+            });
+            // Required to prevent skipping position bc switch race condition
+            await sleep(1500);
+            this.switchTrigger = false;
+            let i = 0;
+            while (
+              !this.switchTrigger &&
+              this.state === CALIBRATION_STATE.RUNNING
+            ) {
+              await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
+                z: -1 * Math.abs(this.calParams.zstep),
+              });
+              await sleep(500);
+              i++;
+            }
+            if (this.state !== CALIBRATION_STATE.RUNNING) {
+              return;
+            }
+            this.switchTrigger = false;
+            const rawPosition: string = await this.serialService.sendCommand(
+              SERIAL_COMMAND.GET_POSITION
+            );
+            const position = rawPosition
+              .split(' ')
+              .slice(0, 3)
+              .map((x) => {
+                const parts = x.split(':');
+                return Number(parts[parts.length - 1]);
+              });
+            if (this.cX === 0 && this.cY === 0 && !accurateWorkOriginSet) {
+              await this.serialService.sendCommand(SERIAL_COMMAND.SET_WORK);
+              await sleep(1000);
+              accurateWorkOriginSet = true;
+              continue;
+            }
+            this.appendToPoints([this.cX, this.cY, position[2]]);
+            this.rowMap.push([this.cX, this.cY, position[2]]);
+            this.cX += this.dX;
           }
           if (this.state !== CALIBRATION_STATE.RUNNING) {
             return;
           }
-          this.switchTrigger = false;
-          const rawPosition: string = await this.serialService.sendCommand(
-            SERIAL_COMMAND.GET_POSITION
-          );
-          const position = rawPosition
-            .split(' ')
-            .slice(0, 3)
-            .map((x) => {
-              const parts = x.split(':');
-              return Number(parts[parts.length - 1]);
+          this.cY += this.dY;
+          this.pushHeightMap(this.rowMap);
+          if (this.cY > this.calParams.y) {
+            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
+              z: 15,
             });
-          this.appendToPoints([this.cX, this.cY, position[2]]);
-          this.rowMap.push([this.cX, this.cY, position[2]]);
-          this.cX += this.dX;
-        }
-        if (this.state !== CALIBRATION_STATE.RUNNING) {
-          return;
-        }
-        this.cY += this.dY;
-        this.heightMap.push(this.rowMap);
-        if (this.cY > this.calParams.y) {
-          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_REL, {
-            z: 15,
-          });
-          break;
-        } else {
-          this.cX = 0;
-          this.zResults = [];
-          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-            z: this.calParams.ztrav,
-          });
-          await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
-            y: this.cY,
-          });
+            break;
+          } else {
+            this.cX = 0;
+            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+              z: this.calParams.ztrav,
+            });
+            await this.serialService.sendCommand(SERIAL_COMMAND.MOVE_ABS, {
+              y: this.cY,
+            });
+          }
+        } catch (e) {
+          if (e instanceof SerialTimeoutError) {
+            console.error(e);
+            this.stop(e);
+            return;
+          } else {
+            throw e;
+          }
         }
       }
     } else {
-      this.heightMap = JSON.parse(DEBUG_heightMap);
+      this.setHeightMap(JSON.parse(DEBUG_heightMap));
     }
     console.log(this.heightMap);
-    localStorage.removeItem('DEBUG_heightMap')
+    localStorage.removeItem('cX');
+    localStorage.removeItem('cY');
+    localStorage.removeItem('rowMap');
+    // localStorage.removeItem('DEBUG_heightMap');
     // localStorage.setItem('DEBUG_heightMap', JSON.stringify(this.heightMap));
-    this.sendToHeightMap();
+    this.sendToHeightMapService();
+    localStorage.removeItem('heightMap');
     this.state = CALIBRATION_STATE.STOPPED;
     this.calParams.onComplete();
   }
@@ -210,6 +244,7 @@ export class CalibrationService extends IPCRendererBase {
     this.abortController = new AbortController();
     if (error) {
       this.calParams.onError(error);
+      this.notificationService.showError(error.toString());
     }
   }
 
@@ -217,7 +252,7 @@ export class CalibrationService extends IPCRendererBase {
     this._points.next([]);
   }
 
-  sendToHeightMap() {
+  sendToHeightMapService() {
     const metadata = {
       x: this.calParams.x,
       y: this.calParams.y,
@@ -226,7 +261,24 @@ export class CalibrationService extends IPCRendererBase {
       timestamp: new Date().toUTCString(),
     };
     const DEBUG_metadata = localStorage.getItem('DEBUG_metadata');
-    this.heightMapService.loadHeightMapFromCalibration(this.heightMap, DEBUG_metadata ? JSON.parse(DEBUG_metadata) : metadata);
+    this.heightMapService.loadHeightMapFromCalibration(
+      this.heightMap,
+      DEBUG_metadata ? JSON.parse(DEBUG_metadata) : metadata
+    );
     // localStorage.setItem('DEBUG_metadata', JSON.stringify(metadata));
+  }
+
+  private saveHeightMap() {
+    localStorage.setItem('heightMap', JSON.stringify(this.heightMap));
+  }
+
+  private setHeightMap(hm: number[][][]) {
+    this.heightMap = hm;
+    this.saveHeightMap();
+  }
+
+  private pushHeightMap(item: number[][]) {
+    this.heightMap.push(item);
+    this.saveHeightMap();
   }
 }

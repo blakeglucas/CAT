@@ -42,6 +42,6 @@ export class CurrentHeightMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   refreshFromCalibration() {
-    this.calibrationService.sendToHeightMap();
+    this.calibrationService.sendToHeightMapService();
   }
 }

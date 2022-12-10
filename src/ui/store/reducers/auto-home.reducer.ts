@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export type AutoHomeState = {
-  zStep: number
-  running: boolean
+  zStep: number;
+  running: boolean;
 };
 
 const initialState: AutoHomeState = {
@@ -16,14 +16,14 @@ export const autoHomeSlice = createSlice({
   initialState,
   reducers: {
     setZStep(state, action: PayloadAction<number>) {
-        state.zStep = action.payload
+      state.zStep = action.payload;
     },
     setRunning(state, action: PayloadAction<boolean>) {
-        state.running = action.payload
+      state.running = action.payload;
     },
   },
 });
 
-export const autoHomeActions = autoHomeSlice.actions
+export const autoHomeActions = autoHomeSlice.actions;
 
-export default autoHomeSlice.reducer
+export default autoHomeSlice.reducer;

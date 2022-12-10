@@ -27,7 +27,13 @@ const reducers = combineReducers({
     {
       key: 'serial',
       storage,
-      blacklist: ['availablePorts', 'cncConnecting', 'cncConnected', 'switchConnecting', 'switchConnected'],
+      blacklist: [
+        'availablePorts',
+        'cncConnecting',
+        'cncConnected',
+        'switchConnecting',
+        'switchConnected',
+      ],
     },
     serialReducer
   ),
@@ -35,9 +41,10 @@ const reducers = combineReducers({
     {
       key: 'autoHome',
       storage,
-      blacklist: ['running']
-    }, autoHomeReducer
-  )
+      blacklist: ['running'],
+    },
+    autoHomeReducer
+  ),
 });
 
 // https://github.com/reduxjs/redux-toolkit/issues/1831

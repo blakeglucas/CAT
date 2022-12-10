@@ -2,12 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export type CalibrationState = {
-  xDim: number
-  yDim: number
-  xPoints: number
-  yPoints: number
-  zStep: number
-  zTrav: number
+  xDim: number;
+  yDim: number;
+  xPoints: number;
+  yPoints: number;
+  zStep: number;
+  zTrav: number;
   state: 0;
   cX: number;
   cY: number;
@@ -60,6 +60,6 @@ export const calibrationSlice = createSlice({
   },
 });
 
-export const calibrationActions = calibrationSlice.actions
+export const calibrationActions = calibrationSlice.actions;
 
-export default calibrationSlice.reducer
+export default calibrationSlice.reducer;

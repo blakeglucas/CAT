@@ -13,7 +13,5 @@
     "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": [
-    "py/**/*"
-  ]
+  "ignorePatterns": ["py/**/*"]
 }

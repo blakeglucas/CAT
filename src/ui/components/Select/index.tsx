@@ -11,21 +11,21 @@ export interface SelectOption {
 }
 
 type Props = RDSelectProps<SelectOption> & {
-  label: string
-}
+  label: string;
+};
 
 export function Select(props: Props) {
   return (
     <div className='flex flex-col'>
       <label className='text-white text-xs mb-1'>{props.label}</label>
-        <RDSelect
-          dropdownGap={0}
-          {...props}
-          dropdownHandleRenderer={HandleRenderer}
-          noDataRenderer={NoDataRenderer}
-          itemRenderer={ItemRenderer}
-          contentRenderer={ContentRenderer}
-        />
+      <RDSelect
+        dropdownGap={0}
+        {...props}
+        dropdownHandleRenderer={HandleRenderer}
+        noDataRenderer={NoDataRenderer}
+        itemRenderer={ItemRenderer}
+        contentRenderer={ContentRenderer}
+      />
     </div>
   );
 }

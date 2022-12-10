@@ -9,16 +9,16 @@ import CurrentHeightMapPage from './pages/CurrentHeightMap';
 import { RawGCodePage } from './pages/RawGCode';
 import { ContouredGCodePage } from './pages/ContouredGCode';
 import { useDispatch } from './store/hooks';
-import { getSerialPorts } from './store/thunks/serial.thunk'
+import { getSerialPorts } from './store/thunks/serial.thunk';
 
 export default function App() {
   const [siderWidth, setSiderWidth] = React.useState(400);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(getSerialPorts())
-  }, [])
+    dispatch(getSerialPorts());
+  }, []);
 
   return (
     <>

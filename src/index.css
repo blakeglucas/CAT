@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 body {
-    margin: 0 !important;
-    @apply bg-neutral-600;
+  margin: 0 !important;
+  @apply bg-neutral-600;
 }

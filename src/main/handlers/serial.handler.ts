@@ -45,7 +45,7 @@ export class SerialHandler {
       (portType === 'switch' && this.switchPort && this.switchPort.isOpen)
     ) {
       this.send('serial/connectPort', undefined, true);
-      return
+      return;
     }
     try {
       const newPort = await new Promise<SerialPort>((resolve, reject) => {

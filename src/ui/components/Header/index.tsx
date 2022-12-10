@@ -1,6 +1,6 @@
-import React from "react";
-import Tab from "./Tab";
-import { useLocation, matchRoutes } from 'react-router'
+import React from 'react';
+import Tab from './Tab';
+import { useLocation, matchRoutes } from 'react-router';
 
 const tabs = [
   {
@@ -17,23 +17,27 @@ const tabs = [
   },
   {
     label: 'Raw G-Code',
-    href: '/rawGCode'
+    href: '/rawGCode',
   },
   {
     label: 'Contoured G-Code',
-    href: '/contouredGCode'
-  }
-]
+    href: '/contouredGCode',
+  },
+];
 
 export function Header() {
-  const location = useLocation()
+  const location = useLocation();
 
-  const [activeTab, setActiveTab] = React.useState()
+  const [activeTab, setActiveTab] = React.useState();
 
   return (
-    <nav className="flex flex-row bg-neutral-800 w-full flex-grow shadow-xl sticky top-0 left-0 right-0">
+    <nav className='flex flex-row bg-neutral-800 w-full flex-grow shadow-xl sticky top-0 left-0 right-0'>
       {tabs.map((tab, i) => (
-        <Tab key={i} label={tab.label} href={tab.href} />
+        <Tab
+          key={i}
+          label={tab.label}
+          href={tab.href}
+        />
       ))}
       <Tab filler />
     </nav>

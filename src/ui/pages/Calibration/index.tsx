@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export function CalibrationPage() {
-    return <div></div>
+  return <div></div>;
 }

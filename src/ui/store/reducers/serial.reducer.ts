@@ -1,5 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '..';
+import { CALIBRATION_STATE } from './calibration.reducer';
 
 export type SerialState = {
   cncPort?: string;
@@ -68,5 +70,19 @@ export const serialSlice = createSlice({
 });
 
 export const serialActions = serialSlice.actions;
+
+export const serialReadySelector = createSelector(
+  (state: RootState) => ({
+    serial: state.serial,
+    calState: state.calibration.state,
+  }),
+  ({ serial, calState }) =>
+    serial.cncPort &&
+    serial.switchPort &&
+    serial.cncConnected &&
+    serial.switchConnected &&
+    // !serial.runningCommand &&
+    calState === CALIBRATION_STATE.IDLE
+);
 
 export default serialSlice.reducer;

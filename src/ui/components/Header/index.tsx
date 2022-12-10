@@ -31,7 +31,7 @@ export function Header() {
   const [activeTab, setActiveTab] = React.useState();
 
   return (
-    <nav className='flex flex-row bg-neutral-800 w-full flex-grow shadow-xl sticky top-0 left-0 right-0'>
+    <nav className='flex flex-row bg-neutral-800 w-full flex-grow sticky top-0 left-0 right-0'>
       {tabs.map((tab, i) => (
         <Tab
           key={i}

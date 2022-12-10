@@ -12,6 +12,11 @@ rules.push({
   ],
 });
 
+rules.push({
+  test: /\.(s(a|c)ss)$/,
+  use: ['style-loader', 'css-loader', 'sass-loader'],
+});
+
 export const rendererConfig: Configuration = {
   module: {
     rules,

@@ -30,6 +30,7 @@ export default function TabComponent(props: NonFillerProps | FillerProps) {
         )
       }
       style={{ minWidth: '75px' }}
+      tabIndex={props.filler ? -1 : undefined}
       to={props.href}>
       {props.label}
     </NavLink>

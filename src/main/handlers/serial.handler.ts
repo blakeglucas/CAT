@@ -2,8 +2,8 @@ import { BrowserWindow, ipcMain } from 'electron';
 import { SerialPort } from 'serialport';
 import {
   SERIAL_COMMAND_MAP,
-  UI_SERIAL_COMMAND,
-  UI_SERIAL_PARAMS,
+  SERIAL_COMMAND,
+  SERIAL_PARAMS,
 } from '../../shared/marlin';
 import { readSerial, writeSerial } from '../utils/serial';
 
@@ -58,6 +58,7 @@ export class SerialHandler {
             if (e) {
               reject(e);
             } else {
+              p.setMaxListeners(0)
               resolve(p);
             }
           }
@@ -122,10 +123,10 @@ export class SerialHandler {
 
   async onSerialCommand(
     event: any,
-    cmd: UI_SERIAL_COMMAND,
-    params: UI_SERIAL_PARAMS
+    cmd: SERIAL_COMMAND,
+    params: SERIAL_PARAMS
   ) {
-    console.log(cmd, params);
+    console.log(cmd, params)
     const c = SERIAL_COMMAND_MAP[cmd];
     if (!c) {
       throw new Error('Invalid serial command');
@@ -153,6 +154,14 @@ export class SerialHandler {
     );
     const result = await readSerial(this.cncPort);
     this.send('serial/sendCommand', undefined, result);
+  }
+
+  closeAll() {
+    [this.cncPort, this.switchPort].forEach(port => {
+      try {
+        port.close()
+      } catch { /* empty */ }
+    })
   }
 
   private onSwitchData() {

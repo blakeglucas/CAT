@@ -2,6 +2,9 @@ import { ReadlineParser, SerialPort } from 'serialport';
 
 export async function writeSerial(port: SerialPort, x: any) {
   return await new Promise<void>((resolve, reject) => {
+    if (!port) {
+      reject('Serial port is not open or initialized')
+    }
     port.write(x + '\n', (err) => {
       if (err) {
         console.error(err);

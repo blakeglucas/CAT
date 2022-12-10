@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { UI_SERIAL_COMMAND } from '../../../shared/marlin';
+import { SERIAL_COMMAND } from '../../../shared/marlin';
 import { RootState } from '..';
 import { sendSerialCommand } from './serial.thunk';
 import { sleep } from '../../utils/sleep';
@@ -25,7 +25,7 @@ export const runAutoHome = createAsyncThunk(
     while (!switchTrigger && !killed) {
       dispatch(
         sendSerialCommand({
-          cmd: UI_SERIAL_COMMAND.MOVE_REL,
+          cmd: SERIAL_COMMAND.MOVE_REL,
           params: { z: -1 * Math.abs(zStep) },
         })
       );
@@ -38,10 +38,11 @@ export const runAutoHome = createAsyncThunk(
       return;
     }
     console.log('switch triggered');
-    dispatch(sendSerialCommand({ cmd: UI_SERIAL_COMMAND.SET_WORK }));
+    dispatch(sendSerialCommand({ cmd: SERIAL_COMMAND.SET_WORK }));
     while ((getState() as RootState).serial.runningCommand) {
       await sleep(500);
     }
+    ipcRenderer.off('serial/switchTrigger', onSwitchTrigger)
     dispatch(autoHomeActions.setRunning(false));
   }
 );

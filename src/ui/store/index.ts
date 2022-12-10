@@ -19,7 +19,9 @@ const reducers = combineReducers({
     {
       key: 'calibration',
       storage,
-      blacklist: [],
+      blacklist: [
+        'state'
+      ],
     },
     calibrationReducer
   ),

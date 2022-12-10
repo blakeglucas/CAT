@@ -59,18 +59,16 @@ export function Sider(props: Props) {
     dispatch(serialActions.setCncPort(value[0].label));
   }
 
-  function setCncBaud(event: React.FocusEvent<HTMLInputElement>) {
-    const target = event.target as HTMLInputElement;
-    dispatch(serialActions.setCncBaud(Number(target.value)));
+  function setCncBaud(value: string) {
+    dispatch(serialActions.setCncBaud(Number(value)));
   }
 
   function setSwitchPort(value: SelectOption[]) {
     dispatch(serialActions.setSwitchPort(value[0].label));
   }
 
-  function setSerialBaud(event: React.FocusEvent<HTMLInputElement>) {
-    const target = event.target as HTMLInputElement;
-    dispatch(serialActions.setSwitchBaud(Number(target.value)));
+  function setSerialBaud(value: string) {
+    dispatch(serialActions.setSwitchBaud(Number(value)));
   }
 
   function refreshPorts() {

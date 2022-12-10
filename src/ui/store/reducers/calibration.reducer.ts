@@ -1,6 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+export enum CALIBRATION_STATE {
+  IDLE = 0,
+  RUNNING,
+  STOPPING,
+  STOPPED,
+  PAUSED,
+}
+
 export type CalibrationState = {
   xDim: number;
   yDim: number;
@@ -8,7 +16,7 @@ export type CalibrationState = {
   yPoints: number;
   zStep: number;
   zTrav: number;
-  state: 0;
+  state: CALIBRATION_STATE;
   cX: number;
   cY: number;
   rowMap: number[][];
@@ -22,7 +30,7 @@ const initialState: CalibrationState = {
   yPoints: 5,
   zStep: 0.1,
   zTrav: 1,
-  state: 0,
+  state: CALIBRATION_STATE.IDLE,
   cX: 0,
   cY: 0,
   rowMap: [],
@@ -56,6 +64,27 @@ export const calibrationSlice = createSlice({
     },
     resetHeightMap(state) {
       state.heightMap = [];
+    },
+    setState(state, action: PayloadAction<CALIBRATION_STATE>) {
+      state.state = action.payload
+    },
+    setXDim(state, action: PayloadAction<number>) {
+      state.xDim = action.payload
+    },
+    setYDim(state, action: PayloadAction<number>) {
+      state.yDim = action.payload
+    },
+    setXPoints(state, action: PayloadAction<number>) {
+      state.xPoints = action.payload
+    },
+    setYPoints(state, action: PayloadAction<number>) {
+      state.yPoints = action.payload
+    },
+    setZStep(state, action: PayloadAction<number>) {
+      state.zStep = action.payload
+    },
+    setZTrav(state, action: PayloadAction<number>) {
+      state.zTrav = action.payload
     },
   },
 });

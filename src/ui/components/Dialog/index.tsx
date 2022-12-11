@@ -1,16 +1,14 @@
 import React from 'react';
 import {
-  Dialog as RawDialog,
   DialogContent,
-  DialogOverlay,
   DialogProps as RawDialogProps,
 } from '@reach/dialog';
 import { animated, useTransition } from 'react-spring';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
-import { UilTimes, UilX } from '@iconscout/react-unicons';
+import { UilTimes } from '@iconscout/react-unicons';
 
-const AnimatedDialogOverlay = animated(DialogOverlay);
+// const AnimatedDialogOverlay = animated(DialogOverlay);
 const AnimatedDialogContent = animated(DialogContent);
 
 export type DialogAction = {

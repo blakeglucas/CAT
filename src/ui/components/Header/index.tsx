@@ -1,6 +1,5 @@
 import React from 'react';
 import Tab from './Tab';
-import { useLocation, matchRoutes } from 'react-router';
 
 const tabs = [
   {
@@ -26,10 +25,6 @@ const tabs = [
 ];
 
 export function Header() {
-  const location = useLocation();
-
-  const [activeTab, setActiveTab] = React.useState();
-
   return (
     <nav className='flex flex-row bg-neutral-800 w-full flex-grow sticky top-0 left-0 right-0'>
       {tabs.map((tab, i) => (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from '../../store/hooks';
@@ -9,6 +10,8 @@ import {
 import { Button } from '../../components/Button';
 import { Dialog, DialogProps } from '../../components/Dialog';
 import { runCalibration as runCalibrationThunk } from '../../store/thunks/calibration.thunk';
+import CalibrationGrid, { CalibrationGridHandler } from '../../components/CalibrationGrid';
+import { useHeaderHeight } from '../../hooks/useHeaderHeight';
 
 function ConfirmDialog(
   props: Partial<DialogProps> & { runCalibration: () => void }
@@ -21,7 +24,7 @@ function ConfirmDialog(
       actions={[
         {
           btnLabel: 'No',
-          onActivate: () => props.onDismiss(null!),
+          onActivate: () => props.onDismiss(null),
         },
         {
           btnLabel: 'Yes',
@@ -46,7 +49,23 @@ export function CalibrationPage() {
   );
   const dispatch = useDispatch();
 
+  const headerHeight = useHeaderHeight()
+
   const runPtr = React.useRef(undefined);
+  const controlPanelRef = React.useRef<HTMLDivElement>();
+
+  const calibrationGridRef = React.useRef<CalibrationGridHandler>(null)
+
+  // React.useLayoutEffect(() => {
+  //   function updateGridSize() {
+  //     console.log(controlPanelRef, window.innerHeight - controlPanelRef.current?.getBoundingClientRect()?.height)
+  //     setWidth(controlPanelRef.current?.getBoundingClientRect()?.width);
+  //     setHeight(window.innerHeight - controlPanelRef.current?.getBoundingClientRect()?.height);
+  //   }
+  //   window.addEventListener('resize', updateGridSize);
+  //   updateGridSize();
+  //   return () => window.removeEventListener('resize', updateGridSize);
+  // }, [controlPanelRef]);
 
   const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
@@ -68,8 +87,10 @@ export function CalibrationPage() {
 
   return (
     <>
-      <div>
-        <div className='flex flex-row items-center justify-center h-24 bg-neutral-900'>
+      <div className='flex flex-col items-start justify-start w-full h-full' style={{marginTop: -headerHeight, paddingTop: headerHeight}}>
+        <div
+          ref={controlPanelRef}
+          className='flex flex-row items-center justify-center h-24 bg-neutral-900 w-full'>
           <div className='grid grid-cols-3 lg:grid-cols-7 gap-8'>
             <Input
               label='X Size (mm)'
@@ -129,13 +150,18 @@ export function CalibrationPage() {
             )}
           </div>
         </div>
+        <div className='flex-1 flex-grow flex-shrink-0 h-full w-full relative'>
+          {/* @ts-ignore */}
+          <CalibrationGrid ref={calibrationGridRef} />
+          <Button className='absolute top-8 right-8' onClick={() => {console.log(calibrationGridRef.current); calibrationGridRef.current?.resetView()}}>Reset View</Button>
+        </div>
       </div>
       <ConfirmDialog
         isOpen={showConfirmDialog}
         onDismiss={closeConfirmation}
         runCalibration={() => {
-          closeConfirmation()
-          runCalibration()
+          closeConfirmation();
+          runCalibration();
         }}
       />
     </>

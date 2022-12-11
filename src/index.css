@@ -31,3 +31,7 @@ body {
   margin: 10vh auto;
   outline: none;
 }
+
+.cet-controls-container .cet-icon {
+  @apply flex items-center justify-center !important;
+}

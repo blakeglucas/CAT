@@ -4,20 +4,10 @@ import { ContentRenderer } from './ContentRenderer';
 import { HandleRenderer } from './HandleRenderer';
 import { ItemRenderer } from './ItemRenderer';
 import { NoDataRenderer } from './NoDataRenderer';
-import styled from 'styled-components'
-import tw from 'tailwind-styled-components'
-
-const SelectComponent = tw(RDSelect)`
-  bg-neutral-600
-  disabled:text-neutral-400
-  outline-none
-  focus:outline-blue-400
-  focus-within:outline-blue-400
-`;
 
 export interface SelectOption {
   label: string;
-  value?: any;
+  value?: unknown;
 }
 
 type Props = RDSelectProps<SelectOption> & {
@@ -28,7 +18,7 @@ export function Select(props: Props) {
   return (
     <div className='flex flex-col'>
       <label className='text-white text-xs mb-1'>{props.label}</label>
-      <SelectComponent
+      <RDSelect
         dropdownGap={0}
         style={{minHeight: '24px', border: 'none'}}
         {...props}

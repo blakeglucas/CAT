@@ -24,6 +24,7 @@ export type GCodeRendererHandler = {
 
 export type GCodeRendererProps = {
   gcode: string;
+  zScale?: number;
 };
 
 export const GCodeRenderer = React.forwardRef(
@@ -91,7 +92,10 @@ export const GCodeRenderer = React.forwardRef(
           maxY={yDim}
           stepY={10}
         />
-        <GCode gcode={props.gcode} />
+        <GCode
+          gcode={props.gcode}
+          scaleZ={props.zScale}
+        />
       </Canvas>
     );
   }

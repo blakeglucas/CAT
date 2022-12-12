@@ -11,6 +11,7 @@ export type GCodeState = {
   zDepth: number;
   contourRunning: boolean;
   contourDone: boolean;
+  errors?: string;
 };
 
 const initialState: GCodeState = {
@@ -37,6 +38,9 @@ export const gcodeSlice = createSlice({
     },
     setContourDone(state, action: PayloadAction<boolean>) {
       state.contourDone = action.payload;
+    },
+    setErrors(state, action: PayloadAction<string | undefined>) {
+      state.errors = action.payload;
     },
   },
 });

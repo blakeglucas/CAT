@@ -14,11 +14,6 @@ def find_corners(nn1, nn2, nn3, nn4):
     tl = sorted(sorted(ns, key=lambda x: x[0]), key=lambda x: x[1], reverse=True)[0]
     br = sorted(sorted(ns, key=lambda x: x[0], reverse=True), key=lambda x: x[1])[0]
     tr = sorted(sorted(ns, key=lambda x: x[0], reverse=True), key=lambda x: x[1], reverse=True)[0]
-    # sys.stdout.write(json.dumps(bl))
-    # sys.stdout.write(json.dumps(tl))
-    # sys.stdout.write(json.dumps(br))
-    # sys.stdout.write(json.dumps(tr))
-    # sys.stdout.flush()
     return bl, tl, br, tr
 
 def contour_gcode(obj: GCodeObject, height_map, target_z_depth: float):
@@ -31,7 +26,6 @@ def contour_gcode(obj: GCodeObject, height_map, target_z_depth: float):
         _, i = kd_tree.query((x, y, 0), 4)
         nn1, nn2, nn3, nn4 = [height_map[j] for j in i.tolist()]
         x1, y1, z1 = nn1; x2, y2, z2 = nn2; x3, y3, z3 = nn3; x4, y4, z4 = nn4
-        print([x1, x2, x3, x4], [y1, y2, y3, y4], [z1, z2, z3, z4])
         f = interpolate.interp2d([x1, x2, x3, x4], [y1, y2, y3, y4], [z1, z2, z3, z4])
         result = f(x, y)
         return result[0]
@@ -75,6 +69,5 @@ if __name__ == '__main__':
     gcode_obj = GCodeObject(gcode)
 
     result = contour_gcode(gcode_obj, height_map, min_z_depth)
-    print(result)
     result.write_to_stream(sys.stdout)
 

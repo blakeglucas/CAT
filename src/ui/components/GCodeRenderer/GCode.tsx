@@ -40,12 +40,12 @@ export function GCode(props: GCodeProps) {
     }
 
     function addSegment(p1: GCodePoint, p2: GCodePoint) {
-      if (Math.abs(p1.z) >= 2 * scaleZ) {
-        p1.z /= scaleZ;
-      }
-      if (Math.abs(p2.z) >= 2 * scaleZ) {
-        p2.z /= scaleZ;
-      }
+      // if (Math.abs(p1.z) >= scaleZ) {
+      //   p1.z /= scaleZ;
+      // }
+      // if (Math.abs(p2.z) >= scaleZ) {
+      //   p2.z /= scaleZ;
+      // }
       drawing.pathVertex.push(p1.x, p1.y, p1.z);
       drawing.pathVertex.push(p2.x, p2.y, p2.z);
     }
@@ -78,7 +78,11 @@ export function GCode(props: GCodeProps) {
             y: args.y !== undefined ? absolute(state.y, args.y) : state.y,
             z:
               (args.z !== undefined ? absolute(state.z, args.z) : state.z) *
-              scaleZ,
+              ((cmd === 'G1' || cmd === 'G01') &&
+              args.x !== undefined &&
+              args.y !== undefined
+                ? scaleZ
+                : 1),
             f: args.f !== undefined ? absolute(state.f, args.f) : state.f,
           };
 

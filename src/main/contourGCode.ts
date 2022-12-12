@@ -1,6 +1,5 @@
 import path from 'path';
 import { spawnSync } from 'child_process';
-import { ipcMain } from 'electron';
 
 export async function contourGCode(
   gCode: string,
@@ -8,7 +7,7 @@ export async function contourGCode(
   heightMap: number[][]
 ) {
   try {
-    return await new Promise<string>((resolve, reject) => {
+    return await new Promise<[string, string]>((resolve) => {
       const contourPayload = {
         gCode,
         heightMap,
@@ -22,13 +21,7 @@ export async function contourGCode(
           input: JSON.stringify(contourPayload),
         }
       );
-      if (child.stderr.length > 0) {
-        console.log(child.stderr.toString());
-      }
-      if (child.stdout.length > 0) {
-        console.log(child.stdout.toString());
-      }
-      resolve(child.stdout.toString());
+      resolve([child.stdout.toString(), child.stderr.toString()]);
     });
   } catch (e) {
     console.log(e);

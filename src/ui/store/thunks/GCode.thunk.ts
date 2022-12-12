@@ -12,10 +12,12 @@ export const contourGCode = createAsyncThunk(
     );
     dispatch(gcodeActions.setContourDone(false));
     dispatch(gcodeActions.setContourRunning(true));
+    dispatch(gcodeActions.setErrors(undefined));
     await new Promise((resolve) => {
-      ipcRenderer.once('gcode/contour', (_, cgcode: string) => {
-        console.log(cgcode);
+      ipcRenderer.once('gcode/contour', (_, [cgcode, errors]: string[]) => {
+        console.log(errors);
         dispatch(gcodeActions.setCGCode(cgcode));
+        dispatch(gcodeActions.setErrors(errors));
         dispatch(gcodeActions.setContourDone(true));
         dispatch(gcodeActions.setContourRunning(false));
         resolve(cgcode);

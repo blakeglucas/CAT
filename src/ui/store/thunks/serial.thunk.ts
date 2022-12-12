@@ -6,7 +6,7 @@ const { ipcRenderer } = window.require('electron');
 export const getSerialPorts = createAsyncThunk(
   'serial/getPorts',
   async (_, { dispatch }) => {
-    return await new Promise<void>((resolve, reject) => {
+    return await new Promise<void>((resolve) => {
       dispatch(serialActions.setPortsLoading(true));
       ipcRenderer.once('serial/getPorts', (event, ports: string[]) => {
         console.log(event, ports);

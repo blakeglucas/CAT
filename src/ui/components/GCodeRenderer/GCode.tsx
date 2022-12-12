@@ -92,6 +92,7 @@ export function GCode(props: GCodeProps) {
           //G91: Set to state.relative Positioning
           state.relative = true;
         } else if (cmd === 'G92') {
+          // Necessary??
           //G92: Set Position
           const line = state;
           line.x = args.x !== undefined ? args.x : line.x;

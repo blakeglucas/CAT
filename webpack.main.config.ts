@@ -1,4 +1,7 @@
 import type { Configuration } from 'webpack';
+import path from 'path';
+// eslint-disable-next-line import/default
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 import { rules } from './webpack.rules';
 
@@ -19,4 +22,14 @@ export const mainConfig: Configuration = {
     },
   },
   externals: ['serialport'],
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, 'py'),
+          to: path.join(__dirname, '.webpack/main', 'py'),
+        },
+      ],
+    }),
+  ],
 };

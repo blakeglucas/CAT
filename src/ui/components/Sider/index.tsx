@@ -160,7 +160,7 @@ export function Sider(props: Props) {
             <Input
               label='CNC Baud'
               defaultValue={cncBaud}
-              onBlur={setCncBaud}
+              onBlur={(value) => setCncBaud(value as string)}
               disabled={cncConnected}
             />
             {cncConnected ? (
@@ -202,7 +202,7 @@ export function Sider(props: Props) {
             <Input
               label='Switch Baud'
               defaultValue={switchBaud}
-              onBlur={setSerialBaud}
+              onBlur={(value) => setSerialBaud(value as string)}
               disabled={switchConnected}
             />
             {switchConnected ? (

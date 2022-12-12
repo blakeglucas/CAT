@@ -50,6 +50,7 @@ const reducers = combineReducers({
     {
       key: 'gcode',
       storage,
+      blacklist: ['contourRunning', 'contourDone'],
     },
     gcodeReducer
   ),

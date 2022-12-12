@@ -22,6 +22,7 @@ export type CalibrationState = {
   rowMap: number[][];
   heightMap: number[][][];
   completed: boolean;
+  __runPtr?: Promise<unknown>
 };
 
 const initialState: CalibrationState = {
@@ -90,6 +91,12 @@ export const calibrationSlice = createSlice({
     },
     setCompleted(state, action: PayloadAction<boolean>) {
       state.completed = action.payload
+    },
+    setHeightMap(state, action: PayloadAction<number[][][]>) {
+      state.heightMap = action.payload
+    },
+    saveRunPtr(state, action: PayloadAction<Promise<unknown>>) {
+      state.__runPtr = action.payload
     }
   },
 });

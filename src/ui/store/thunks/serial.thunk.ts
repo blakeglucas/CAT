@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { SERIAL_COMMAND, SERIAL_PARAMS } from '../../../shared/marlin';
 import { serialActions } from '../reducers/Serial.reducer';
 
 const { ipcRenderer } = window.require('electron');

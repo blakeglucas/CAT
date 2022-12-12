@@ -7,10 +7,6 @@ const tabs = [
     href: '/calibration',
   },
   {
-    label: 'Current Height Map',
-    href: '/currentHeightMap',
-  },
-  {
     label: 'Raw G-Code',
     href: '/rawGCode',
   },

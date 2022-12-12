@@ -1,6 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
 import { Titlebar, Color } from 'custom-electron-titlebar';
-import * as path from 'path'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let titlebar;

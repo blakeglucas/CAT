@@ -15,7 +15,7 @@ export type CalibrationThunkArgs = {
   resume?: boolean
 } | null
 
-export const runCalibration = createAsyncThunk(
+const runCalibration = createAsyncThunk(
   'calibration/run',
   async (args: CalibrationThunkArgs, { dispatch, getState, signal }) => {
     async function sendCommand(cmd: SERIAL_COMMAND, params?: SERIAL_PARAMS) {
@@ -30,11 +30,14 @@ export const runCalibration = createAsyncThunk(
     console.log(args)
 
     dispatch(calibrationActions.setCompleted(false))
-    const params = (getState() as RootState).calibration;
     if (!args?.resume) {
+      dispatch(calibrationActions.resetX())
+      dispatch(calibrationActions.resetY())
       dispatch(calibrationActions.resetRowMap())
       dispatch(calibrationActions.resetHeightMap())
     }
+
+    const params = (getState() as RootState).calibration;
     
     // Clam to 2 decimal places to avoid weird JS decimal error propagation
     const dX = Number((params.xDim / (params.xPoints - 1)).toFixed(2));
@@ -132,3 +135,26 @@ export const runCalibration = createAsyncThunk(
     dispatch(calibrationActions.setState(CALIBRATION_STATE.IDLE))
   }
 );
+
+export const safelyStartCalibration = createAsyncThunk(
+  'calibration/safeStart',
+  async (args: CalibrationThunkArgs, { dispatch }) => {
+    const runPtr = dispatch(runCalibration(args))
+    dispatch(calibrationActions.saveRunPtr(runPtr))
+  }
+)
+
+export const safelyStopCalibration = createAsyncThunk(
+  'calibration/safeStop',
+  async (_, {getState}) => {
+    const runPtr = (getState() as RootState).calibration.__runPtr
+    if (runPtr) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      runPtr.abort();
+      while ((getState() as RootState).calibration.state !== CALIBRATION_STATE.IDLE) {
+        await sleep(500)
+      }
+    }
+  }
+)

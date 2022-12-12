@@ -4,12 +4,20 @@ import { Sider } from './components/Sider';
 import { Content } from './components/Content';
 import { HashRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { CalibrationPage } from './pages/Calibration';
-import CurrentHeightMapPage from './pages/CurrentHeightMap';
 import { RawGCodePage } from './pages/RawGCode';
 import { ContouredGCodePage } from './pages/ContouredGCode';
+import { useDispatch } from './store/hooks';
+import MenuThunk from './store/thunks/Menu.thunk';
 
 export default function App() {
-  const [siderWidth, setSiderWidth] = React.useState(400);  
+  const [siderWidth, setSiderWidth] = React.useState(400);
+
+  const dispatch = useDispatch()
+
+  React.useEffect(() => {
+    // register menu handlers
+    dispatch(MenuThunk())
+  }, [])
 
   return (
     <>
@@ -24,10 +32,6 @@ export default function App() {
             <Route
               path='/calibration'
               element={<CalibrationPage />}
-            />
-            <Route
-              path='/currentHeightMap'
-              element={<CurrentHeightMapPage />}
             />
             <Route
               path='/rawGCode'

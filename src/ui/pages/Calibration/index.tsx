@@ -11,7 +11,8 @@ import { Button } from '../../components/Button';
 import { Dialog, DialogProps } from '../../components/Dialog';
 import {
   CalibrationThunkArgs,
-  runCalibration as runCalibrationThunk,
+  safelyStartCalibration,
+  safelyStopCalibration,
 } from '../../store/thunks/Calibration.thunk';
 import CalibrationGrid, {
   CalibrationGridHandler,
@@ -123,7 +124,7 @@ export function CalibrationPage() {
   function promptForConfirmation() {
     if (incompleteRun) {
       setShowResumeDialog(true);
-    } else {
+    } else if(incompleteRun || complete) {
       setShowConfirmDialog(true);
     }
   }
@@ -133,11 +134,11 @@ export function CalibrationPage() {
   }
 
   function runCalibration(args?: CalibrationThunkArgs) {
-    runPtr.current = dispatch(runCalibrationThunk(args || null));
+    runPtr.current = dispatch(safelyStartCalibration(args || null));
   }
 
   function stopCalibration() {
-    runPtr.current.abort();
+    dispatch(safelyStopCalibration())
   }
 
   React.useEffect(() => {
@@ -241,7 +242,10 @@ export function CalibrationPage() {
         />
         <ResumeDialog
           isOpen={showResumeDialog}
-          onDismiss={() => setShowResumeDialog(false)}
+          onDismiss={() => {
+            setShowResumeDialog(false);
+            setShowConfirmDialog(true)
+          }}
           runCalibration={() => {
             setShowResumeDialog(false);
             runCalibration({ resume: true });

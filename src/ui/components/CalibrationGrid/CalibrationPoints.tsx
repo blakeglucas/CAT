@@ -36,7 +36,7 @@ export function CalibrationPoints() {
   const [points, setPoints] = React.useState<JSX.Element[]>([]);
 
   function drawPoints() {
-    // Clam to 2 decimal places to avoid weird JS decimal error propagation
+    // Clamp to 2 decimal places to avoid weird JS decimal error propagation
     const xDelta = Number((xDim / (xPoints - 1)).toFixed(2));
     const yDelta = Number((yDim / (yPoints - 1)).toFixed(2));
 

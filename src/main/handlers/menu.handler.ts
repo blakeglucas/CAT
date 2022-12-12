@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, BrowserWindow } from 'electron';
 import * as fs from 'fs/promises';
 
 export function newProject(
@@ -120,3 +120,7 @@ export async function saveCGCode(
     fs.writeFile(saveResult.filePath, gcode);
   }
 }
+
+ipcMain.on('menu/requestOpenRawGCode', () => {
+  openRawGCode(null, BrowserWindow.getFocusedWindow());
+});

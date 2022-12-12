@@ -6,10 +6,18 @@ import { Input } from '../Input';
 import { Button } from '../Button';
 import { useDispatch, useSelector } from '../../store/hooks';
 import { RootState } from '../../store';
-import { serialActions } from '../../store/reducers/serial.reducer';
-import * as serialThunks from '../../store/thunks/serial.thunk';
+import { serialActions } from '../../store/reducers/Serial.reducer';
+import * as serialThunks from '../../store/thunks/Serial.thunk';
 import { UilCheckCircle, UilStopCircle } from '@iconscout/react-unicons';
 import { IconButton } from '../IconButton';
+import { AutoWorkOrigin } from './AutoWorkOrigin';
+import { MachineCoordinates } from './MachineCoordinates';
+import { getSerialPorts } from '../../store/thunks/Serial.thunk';
+import { MachineController } from './MachineController';
+
+function Divider() {
+  return <hr className='w-full border-neutral-400 my-4' />;
+}
 
 interface Props {
   width: number;
@@ -42,6 +50,10 @@ export function Sider(props: Props) {
   ]);
 
   const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(getSerialPorts());
+  }, []);
 
   const unusedPorts = React.useMemo(
     () => availablePorts.filter((p) => cncPort !== p && switchPort !== p),
@@ -215,8 +227,7 @@ export function Sider(props: Props) {
               </IconButton>
             )}
           </div>
-
-          <div className='col-span-1 md:col-span-2 w-full flex justify-center'>
+          <div className='col-span-1 md:col-span-2 w-full flex justify-center pt-2'>
             <Button
               onClick={refreshPorts}
               disabled={portsLoading || (cncConnected && switchConnected)}>
@@ -224,6 +235,23 @@ export function Sider(props: Props) {
             </Button>
           </div>
         </div>
+        {cncConnected && (
+          <>
+            <Divider />
+            <p className='text-xs text-white mb-4'>Machine Coordinates</p>
+            <MachineCoordinates />
+            <Divider />
+            <p className='text-xs text-white mb-4'>Machine Control</p>
+            <MachineController />
+            {switchConnected && (
+              <>
+                <Divider />
+                <p className='text-xs text-white mb-4'>Auto-Set Work Origin</p>
+                <AutoWorkOrigin />
+              </>
+            )}
+          </>
+        )}
       </div>
     </Rnd>
   );

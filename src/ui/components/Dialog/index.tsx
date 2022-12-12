@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   DialogContent,
+  DialogOverlay,
   DialogProps as RawDialogProps,
 } from '@reach/dialog';
 import { animated, useTransition } from 'react-spring';
@@ -8,7 +9,7 @@ import { Button } from '../Button';
 import { IconButton } from '../IconButton';
 import { UilTimes } from '@iconscout/react-unicons';
 
-// const AnimatedDialogOverlay = animated(DialogOverlay);
+const AnimatedDialogOverlay = animated(DialogOverlay);
 const AnimatedDialogContent = animated(DialogContent);
 
 export type DialogAction = {
@@ -32,7 +33,7 @@ export function Dialog(props: DialogProps) {
   return transitions(
     (styles, item) =>
       item && (
-        // <AnimatedDialogOverlay style={{ opacity: styles.opacity }} className='bg-neutral-500 bg-opacity-30'>
+        <AnimatedDialogOverlay style={{ opacity: styles.opacity }} className='bg-neutral-500 bg-opacity-30' dangerouslyBypassFocusLock dangerouslyBypassScrollLock>
           <AnimatedDialogContent
             className='bg-neutral-800 text-white max-w-xl shadow-lg relative'
             style={{
@@ -50,14 +51,14 @@ export function Dialog(props: DialogProps) {
                     if (action.renderer) {
                         return action.renderer(i, action.onActivate)
                     }
-                    return <Button onClick={action.onActivate} className='bg-neutral-700'>{action.btnLabel}</Button>
+                    return <Button key={i} onClick={action.onActivate} className='bg-neutral-700'>{action.btnLabel}</Button>
                 })}
             </div>
             <IconButton onClick={props.onDismiss} className='absolute top-4 right-4'>
                 <UilTimes size={16} />
             </IconButton>
           </AnimatedDialogContent>
-        // </AnimatedDialogOverlay>
+        </AnimatedDialogOverlay>
       )
   );
 }

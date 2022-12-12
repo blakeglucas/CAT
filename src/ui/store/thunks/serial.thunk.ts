@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { SERIAL_COMMAND, SERIAL_PARAMS } from '../../../shared/marlin';
-import { serialActions } from '../reducers/serial.reducer';
+import { serialActions } from '../reducers/Serial.reducer';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -59,35 +59,3 @@ export const manageSerialPort = createAsyncThunk(
     });
   }
 );
-
-type SerialCommandPayload = {
-  cmd: SERIAL_COMMAND;
-  params?: SERIAL_PARAMS;
-};
-
-export const sendSerialCommand = createAsyncThunk(
-  'serial/sendCommand',
-  async ({ cmd, params }: SerialCommandPayload, { dispatch }) => {
-    dispatch(serialActions.setRunningCommand(true));
-    return await new Promise<string | undefined>((resolve, reject) => {
-      ipcRenderer.once('serial/sendCommand', (event, err?: string, result?: string) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          dispatch(serialActions.setRunningCommand(false));
-          resolve(result);
-        }
-      });
-      ipcRenderer.send('serial/sendCommand', cmd, params);
-    });
-  }
-);
-
-export const getCurrentMachinePosition = createAsyncThunk(
-  'serial/getCurrentMachinePosition',
-  async (_, {dispatch}) => {
-    dispatch(serialActions.setRunningCommand(true));
-    return await dispatch(sendSerialCommand({ cmd: SERIAL_COMMAND.GET_POSITION }))
-  }
-)

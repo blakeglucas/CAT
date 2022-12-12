@@ -21,6 +21,7 @@ export type CalibrationState = {
   cY: number;
   rowMap: number[][];
   heightMap: number[][][];
+  completed: boolean;
 };
 
 const initialState: CalibrationState = {
@@ -35,6 +36,7 @@ const initialState: CalibrationState = {
   cY: 0,
   rowMap: [],
   heightMap: [],
+  completed: false,
 };
 
 export const calibrationSlice = createSlice({
@@ -86,6 +88,9 @@ export const calibrationSlice = createSlice({
     setZTrav(state, action: PayloadAction<number>) {
       state.zTrav = action.payload
     },
+    setCompleted(state, action: PayloadAction<boolean>) {
+      state.completed = action.payload
+    }
   },
 });
 

@@ -5,7 +5,7 @@ import {
   SERIAL_COMMAND,
   SERIAL_PARAMS,
 } from '../../shared/marlin';
-import { readSerial, writeSerial } from '../utils/serial';
+import { readSerial, waitForOk, writeSerial } from '../utils/serial';
 
 export class SerialHandler {
   private cncPort: SerialPort;
@@ -152,6 +152,9 @@ export class SerialHandler {
         }
       })
     );
+    if (cmd === SERIAL_COMMAND.HOME) {
+      await waitForOk(this.cncPort)
+    }
     const result = await readSerial(this.cncPort);
     this.send('serial/sendCommand', undefined, result);
   }

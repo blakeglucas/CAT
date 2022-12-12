@@ -6,8 +6,10 @@ import { GridLines } from '../../utils/threejs/GridLines';
 import { Camera, CameraProps } from '../../utils/threejs/Camera';
 import { useSelector } from '../../store/hooks';
 import { RootState } from '../../store';
-import Controls from '../../utils/threejs/Controls';
+// import Controls from '../../utils/threejs/Controls';
 import { CalibrationPoints } from './CalibrationPoints';
+import { OrbitControls } from '@react-three/drei';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 // const gradientVertexShader = `
 // uniform mat4 model_view_projection_matrix;
@@ -26,7 +28,7 @@ export type CalibrationGridHandler = {
 
 const defaultCameraProps = {
   fov: 50,
-  aspect: 16 / 9,
+  aspect: 1,
   // near: 0.1,
   position: new THREE.Vector3(0, 0, 0),
 };
@@ -35,12 +37,10 @@ const CalibrationGrid: React.ForwardRefRenderFunction<
   CalibrationGridHandler,
   never
 > = (_, ref) => {
-  const [resetView, setResetView] = React.useState(false);
-
   React.useImperativeHandle(ref, () => ({
     resetView: () => {
-      // It's hacky, but it works
-      setResetView(true);
+      controlsRef.current?.reset();
+      zoomToFit();
     },
   }));
 
@@ -53,40 +53,43 @@ const CalibrationGrid: React.ForwardRefRenderFunction<
     React.useState<CameraProps>(defaultCameraProps);
 
   const canvasRef = React.useRef<HTMLCanvasElement>();
+  const controlsRef = React.useRef<OrbitControlsImpl>();
 
   function zoomToFit() {
-    setTimeout(() => {
-      const theta = cameraProps.fov / 2;
-      // FOV only y related, which causes problems
-      let rel = 0;
-      if (xDim / canvasRef.current.width >= yDim / canvasRef.current.height) {
-        // Where does 1.9 come from? I don't know, but it works.
-        rel =
-          (xDim * canvasRef.current.width) /
-          ((1.9 * canvasRef.current.width) / canvasRef.current.height);
-      } else {
-        rel = yDim * canvasRef.current.height;
-      }
-      // Roughly equating m to threejs units, factoring in 10% buffer, px->m ~= 0.9, hence px->mm ~= 0.0009, plus /2 (idk, I'm lowkey making this up like it's a senior design project)
-      const cHeight = (0.00045 * rel) / Math.tan(theta * ((2 * Math.PI) / 360));
-      setCameraProps({
-        ...cameraProps,
-        position: new THREE.Vector3(0, 0, cHeight),
-      });
-    }, 250);
+    const theta = cameraProps.fov / 2;
+    // FOV only y related, which causes problems
+    let rel = 0;
+    if (xDim / canvasRef.current.width >= yDim / canvasRef.current.height) {
+      // Where does 1.9 come from? I don't know, but it works.
+      rel =
+        (xDim * canvasRef.current.width) /
+        ((1.9 * canvasRef.current.width) / canvasRef.current.height);
+    } else {
+      rel = yDim * canvasRef.current.height;
+    }
+    // Roughly equating m to threejs units, factoring in 10% buffer, px->m ~= 0.9, hence px->mm ~= 0.0009, plus /2 (idk, I'm lowkey making this up like it's a senior design project)
+    const cHeight = (0.00045 * rel) / Math.tan(theta * ((2 * Math.PI) / 360));
+    setCameraProps({
+      ...cameraProps,
+      position: new THREE.Vector3(0, 0, cHeight),
+    });
   }
 
   React.useEffect(() => {
-    if (resetView) {
-      setResetView(false);
-    }
-    zoomToFit();
-  }, [xDim, yDim, resetView]);
+    controlsRef.current?.reset();
+    setTimeout(() => {
+      zoomToFit();
+    }, 100)
+  }, [xDim, yDim, controlsRef.current]);
 
-  return resetView ? null : (
+  return (
     <Canvas ref={canvasRef}>
       <Camera {...cameraProps} />
-      <Controls />
+      <OrbitControls
+        minDistance={1}
+        maxDistance={10000}
+        ref={controlsRef}
+      />
       <color
         attach='background'
         args={['rgb(82,82,82)']}
@@ -97,6 +100,7 @@ const CalibrationGrid: React.ForwardRefRenderFunction<
           maxX={xDim}
           minY={0}
           maxY={yDim}
+          showLabels
         />
         <GridLines
           minX={0}

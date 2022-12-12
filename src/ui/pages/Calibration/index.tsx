@@ -6,12 +6,18 @@ import { Input } from '../../components/Input';
 import {
   calibrationActions,
   CALIBRATION_STATE,
-} from '../../store/reducers/calibration.reducer';
+} from '../../store/reducers/Calibration.reducer';
 import { Button } from '../../components/Button';
 import { Dialog, DialogProps } from '../../components/Dialog';
-import { runCalibration as runCalibrationThunk } from '../../store/thunks/calibration.thunk';
-import CalibrationGrid, { CalibrationGridHandler } from '../../components/CalibrationGrid';
+import {
+  CalibrationThunkArgs,
+  runCalibration as runCalibrationThunk,
+} from '../../store/thunks/Calibration.thunk';
+import CalibrationGrid, {
+  CalibrationGridHandler,
+} from '../../components/CalibrationGrid';
 import { useHeaderHeight } from '../../hooks/useHeaderHeight';
+import { serialReadySelector } from '../../store/reducers/Serial.reducer';
 
 function ConfirmDialog(
   props: Partial<DialogProps> & { runCalibration: () => void }
@@ -35,59 +41,124 @@ function ConfirmDialog(
   );
 }
 
-export function CalibrationPage() {
-  const [xDim, yDim, xPoints, yPoints, zStep, zTrav, calState] = useSelector(
-    (state: RootState) => [
-      state.calibration.xDim,
-      state.calibration.yDim,
-      state.calibration.xPoints,
-      state.calibration.yPoints,
-      state.calibration.zStep,
-      state.calibration.zTrav,
-      state.calibration.state,
-    ]
+function ResumeDialog(
+  props: Partial<DialogProps> & { runCalibration: () => void }
+) {
+  return (
+    <Dialog
+      {...props}
+      title='Resume Incomplete Calibration?'
+      message='An incomplete calibration has been detected. Would you like to resume?'
+      actions={[
+        {
+          btnLabel: 'No',
+          onActivate: () => props.onDismiss(null),
+        },
+        {
+          btnLabel: 'Yes',
+          onActivate: () => props.runCalibration(),
+        },
+      ]}
+    />
   );
+}
+
+function CalibrationFinishedDialog(props: Partial<DialogProps>) {
+  return (
+    <Dialog
+      {...props}
+      title='Calibration Finished!'
+      message='Height map data has been collected successfully'
+      actions={[
+        {
+          btnLabel: 'OK',
+          onActivate: () => props.onDismiss(null),
+        },
+      ]}
+    />
+  );
+}
+
+export function CalibrationPage() {
+  const [
+    xDim,
+    yDim,
+    xPoints,
+    yPoints,
+    zStep,
+    zTrav,
+    calState,
+    incompleteRun,
+    complete,
+  ] = useSelector((state: RootState) => [
+    state.calibration.xDim,
+    state.calibration.yDim,
+    state.calibration.xPoints,
+    state.calibration.yPoints,
+    state.calibration.zStep,
+    state.calibration.zTrav,
+    state.calibration.state,
+    !state.calibration.completed &&
+      (state.calibration.heightMap.length > 0 ||
+        state.calibration.rowMap.length > 0) &&
+      state.calibration.state === CALIBRATION_STATE.IDLE,
+    state.calibration.completed,
+  ]);
+  const serialReady = useSelector(serialReadySelector);
   const dispatch = useDispatch();
 
-  const headerHeight = useHeaderHeight()
+  const ranCalRef = React.useRef(false);
+
+  const headerHeight = useHeaderHeight();
 
   const runPtr = React.useRef(undefined);
   const controlPanelRef = React.useRef<HTMLDivElement>();
 
-  const calibrationGridRef = React.useRef<CalibrationGridHandler>(null)
-
-  // React.useLayoutEffect(() => {
-  //   function updateGridSize() {
-  //     console.log(controlPanelRef, window.innerHeight - controlPanelRef.current?.getBoundingClientRect()?.height)
-  //     setWidth(controlPanelRef.current?.getBoundingClientRect()?.width);
-  //     setHeight(window.innerHeight - controlPanelRef.current?.getBoundingClientRect()?.height);
-  //   }
-  //   window.addEventListener('resize', updateGridSize);
-  //   updateGridSize();
-  //   return () => window.removeEventListener('resize', updateGridSize);
-  // }, [controlPanelRef]);
+  const calibrationGridRef = React.useRef<CalibrationGridHandler>(null);
 
   const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
+  const [showResumeDialog, setShowResumeDialog] = React.useState(false);
+  const [showCompleteDialog, setShowCompleteDialog] = React.useState(false);
 
   function promptForConfirmation() {
-    setShowConfirmDialog(true);
+    if (incompleteRun) {
+      setShowResumeDialog(true);
+    } else {
+      setShowConfirmDialog(true);
+    }
   }
 
   function closeConfirmation() {
     setShowConfirmDialog(false);
   }
 
-  function runCalibration() {
-    runPtr.current = dispatch(runCalibrationThunk());
+  function runCalibration(args?: CalibrationThunkArgs) {
+    runPtr.current = dispatch(runCalibrationThunk(args || null));
   }
 
   function stopCalibration() {
     runPtr.current.abort();
   }
 
+  React.useEffect(() => {
+    if (complete && ranCalRef.current) {
+      setTimeout(() => {
+        setShowCompleteDialog(true);
+      }, 1000);
+    }
+  }, [complete, ranCalRef.current]);
+
+  React.useEffect(() => {
+    if (calState !== CALIBRATION_STATE.IDLE) {
+      ranCalRef.current = true
+    }
+  }, [calState])
+
   return (
     <>
-      <div className='flex flex-col items-start justify-start w-full h-full' style={{marginTop: -headerHeight, paddingTop: headerHeight}}>
+      <div
+        className='flex flex-col items-start justify-start w-full h-full relative'
+        style={{ marginTop: -headerHeight, paddingTop: headerHeight }}>
         <div
           ref={controlPanelRef}
           className='flex flex-row items-center justify-center h-24 bg-neutral-900 w-full'>
@@ -137,6 +208,7 @@ export function CalibrationPage() {
             {calState === CALIBRATION_STATE.IDLE && (
               <Button
                 className='my-auto bg-neutral-700'
+                disabled={!serialReady}
                 onClick={promptForConfirmation}>
                 Start Calibration
               </Button>
@@ -153,17 +225,33 @@ export function CalibrationPage() {
         <div className='flex-1 flex-grow flex-shrink-0 h-full w-full relative'>
           {/* @ts-ignore */}
           <CalibrationGrid ref={calibrationGridRef} />
-          <Button className='absolute top-8 right-8' onClick={() => {console.log(calibrationGridRef.current); calibrationGridRef.current?.resetView()}}>Reset View</Button>
+          <Button
+            className='absolute top-8 right-8'
+            onClick={() => calibrationGridRef.current?.resetView()}>
+            Reset View
+          </Button>
         </div>
+        <ConfirmDialog
+          isOpen={showConfirmDialog}
+          onDismiss={closeConfirmation}
+          runCalibration={() => {
+            closeConfirmation();
+            runCalibration();
+          }}
+        />
+        <ResumeDialog
+          isOpen={showResumeDialog}
+          onDismiss={() => setShowResumeDialog(false)}
+          runCalibration={() => {
+            setShowResumeDialog(false);
+            runCalibration({ resume: true });
+          }}
+        />
+        <CalibrationFinishedDialog
+          isOpen={showCompleteDialog}
+          onDismiss={() => setShowCompleteDialog(false)}
+        />
       </div>
-      <ConfirmDialog
-        isOpen={showConfirmDialog}
-        onDismiss={closeConfirmation}
-        runCalibration={() => {
-          closeConfirmation();
-          runCalibration();
-        }}
-      />
     </>
   );
 }

@@ -40,7 +40,7 @@ export function GridLines({
       }
 
       lines.push(
-        <Line
+        <Line key={lines.length}
           start={[x, minY, 0]}
           end={[x, maxY, 0]}
           color={xColor || color || colornames('gray 70')}
@@ -59,6 +59,7 @@ export function GridLines({
 
       lines.push(
         <Line
+          key={lines.length}
           start={[minX, y, 0]}
           end={[maxX, y, 0]}
           color={yColor || color || colornames('gray 70')}

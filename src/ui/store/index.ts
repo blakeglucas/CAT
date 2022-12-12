@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage';
 import calibrationReducer from './reducers/Calibration.reducer';
 import serialReducer from './reducers/Serial.reducer';
 import machineControlReducer from './reducers/MachineControl.reducer';
+import gcodeReducer from './reducers/GCode.reducer';
 
 const reducers = combineReducers({
   calibration: persistReducer(
@@ -44,6 +45,13 @@ const reducers = combineReducers({
       blacklist: ['machineInfo'],
     },
     machineControlReducer
+  ),
+  gcode: persistReducer(
+    {
+      key: 'gcode',
+      storage,
+    },
+    gcodeReducer
   ),
 });
 

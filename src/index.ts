@@ -134,11 +134,13 @@ const template: MenuItemConstructorOptions[] = [
         type: 'separator',
       },
       {
+        id: 'save-current-height-map',
         label: 'Save Current Height Map',
         accelerator: 'CmdOrCtrl+Shift+H',
         click: MenuHandler.saveHeightMap,
       },
       {
+        id: 'save-contoured-gcode',
         label: 'Save Contoured G-Code',
         accelerator: 'CmdOrCtrl+Shift+G',
         click: MenuHandler.saveCGCode,

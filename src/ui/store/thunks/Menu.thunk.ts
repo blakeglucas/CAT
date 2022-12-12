@@ -4,6 +4,7 @@ import {
   calibrationActions,
   CALIBRATION_STATE,
 } from '../reducers/Calibration.reducer';
+import { gcodeActions } from '../reducers/GCode.reducer';
 import { safelyStopCalibration } from './Calibration.thunk';
 
 const { ipcRenderer } = window.require('electron');
@@ -66,10 +67,17 @@ export default createAsyncThunk('menu', async (_, { dispatch, getState }) => {
       dispatch(calibrationActions.setHeightMap(hmData.heightMap));
     }
   );
-  //   ipcRenderer.on('menu/openGCode', (event, gcode) => {});
+  ipcRenderer.on('menu/openGCode', (event, gcode) => {
+    dispatch(gcodeActions.setRawGCode(gcode));
+  });
   ipcRenderer.on('menu/saveHeightMap', () => {
     const hmData = heightMapSelector(getState() as RootState);
     ipcRenderer.send('menu/saveHeightMap', hmData);
   });
-  //   ipcRenderer.on('menu/saveGCode', () => {});
+  ipcRenderer.on('menu/saveGCode', () => {
+    const gcode = (getState() as RootState).gcode.contoured;
+    if (gcode) {
+      ipcRenderer.send('menu/saveGCode', gcode);
+    }
+  });
 });

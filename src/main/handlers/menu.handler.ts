@@ -41,11 +41,23 @@ export async function openHeightMap(
   }
 }
 
-export function openRawGCode(
+export async function openRawGCode(
   _: Electron.MenuItem,
   browserWindow: Electron.BrowserWindow
 ) {
-  browserWindow.webContents.send('menu/openGCode');
+  const openResult = await dialog.showOpenDialog(browserWindow, {
+    title: 'Open Raw G-Code',
+    filters: [
+      { name: 'G-Code Files', extensions: ['gcode', 'cnc', 'nc'] },
+      { name: 'All Files', extensions: ['*'] },
+    ],
+    properties: ['openFile'],
+  });
+  if (!openResult.canceled && openResult.filePaths.length > 0) {
+    const fileContent = await fs.readFile(openResult.filePaths[0]);
+    const gcode = fileContent.toString();
+    browserWindow.webContents.send('menu/openGCode', gcode);
+  }
 }
 
 export async function saveHeightMap(
@@ -71,9 +83,40 @@ export async function saveHeightMap(
   }
 }
 
-export function saveCGCode(
+export async function saveCGCode(
   _: Electron.MenuItem,
   browserWindow: Electron.BrowserWindow
 ) {
-  browserWindow.webContents.send('menu/saveGCode');
+  const gcode = await new Promise<string>((resolve) => {
+    ipcMain.once('menu/saveGCode', (_, gcode: string) => {
+      resolve(gcode);
+    });
+    browserWindow.webContents.send('menu/saveGCode');
+  });
+  const saveResult = await dialog.showSaveDialog(browserWindow, {
+    title: 'Save Contoured G-Code As',
+    filters: [
+      {
+        name: 'CNC File',
+        extensions: ['cnc'],
+      },
+      { name: 'Contoured G-Code File', extensions: ['cgcode'] },
+      {
+        name: 'G-Code File',
+        extensions: ['gcode'],
+      },
+      {
+        name: 'Laser Engraving File',
+        extensions: ['nc'],
+      },
+      {
+        name: 'All Files',
+        extensions: ['*'],
+      },
+    ],
+    properties: ['showOverwriteConfirmation'],
+  });
+  if (!saveResult.canceled && saveResult.filePath) {
+    fs.writeFile(saveResult.filePath, gcode);
+  }
 }

@@ -18,18 +18,20 @@ void main() {
 `;
 
 export function CalibrationPoints() {
-  const [xDim, yDim, xPoints, yPoints, rawHeightMap, currentRowMap] = useSelector(
-    (state: RootState) => [
+  const [xDim, yDim, xPoints, yPoints, rawHeightMap, currentRowMap] =
+    useSelector((state: RootState) => [
       state.calibration.xDim,
       state.calibration.yDim,
       state.calibration.xPoints,
       state.calibration.yPoints,
       state.calibration.heightMap,
       state.calibration.rowMap,
-    ]
-  );
+    ]);
 
-  const heightMap = React.useMemo(() => [...rawHeightMap.flat(), ...currentRowMap], [rawHeightMap, currentRowMap]);
+  const heightMap = React.useMemo(
+    () => [...rawHeightMap.flat(), ...currentRowMap],
+    [rawHeightMap, currentRowMap]
+  );
 
   const [points, setPoints] = React.useState<JSX.Element[]>([]);
 
@@ -82,10 +84,10 @@ export function CalibrationPoints() {
       }
     }
 
-    setPoints(_points)
+    setPoints(_points);
   }
 
-  React.useEffect(drawPoints, [xDim, yDim, xPoints, yPoints, heightMap])
+  React.useEffect(drawPoints, [xDim, yDim, xPoints, yPoints, heightMap]);
 
-  return (<group>{points}</group>);
+  return <group>{points}</group>;
 }

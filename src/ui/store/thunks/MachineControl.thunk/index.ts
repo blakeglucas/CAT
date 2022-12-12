@@ -16,13 +16,13 @@ export const sendMachineCommand = createAsyncThunk(
     dispatch(serialActions.setRunningCommand(true));
     return await new Promise<string | undefined>((resolve, reject) => {
       if (cmd === SERIAL_COMMAND.HOME) {
-        dispatch(machineControlActions.setHoming(true))
+        dispatch(machineControlActions.setHoming(true));
       }
       ipcRenderer.once(
         'serial/sendCommand',
         (event, err?: string, result?: string) => {
           if (cmd === SERIAL_COMMAND.HOME) {
-            dispatch(machineControlActions.setHoming(false))
+            dispatch(machineControlActions.setHoming(false));
           }
           if (err) {
             console.error(err);

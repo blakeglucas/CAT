@@ -35,7 +35,7 @@ export function Line(props: LineProps) {
         : new THREE.Vector3(...props.end),
     ]);
     if (props.dashed) {
-        lineRef.current.computeLineDistances()
+      lineRef.current.computeLineDistances();
     }
   });
 

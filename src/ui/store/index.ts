@@ -19,9 +19,7 @@ const reducers = combineReducers({
     {
       key: 'calibration',
       storage,
-      blacklist: [
-        'state'
-      ],
+      blacklist: ['state'],
     },
     calibrationReducer
   ),
@@ -43,7 +41,7 @@ const reducers = combineReducers({
     {
       key: 'machineControl',
       storage,
-      blacklist: ['machineInfo']
+      blacklist: ['machineInfo'],
     },
     machineControlReducer
   ),
@@ -55,8 +53,16 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, 'calibration/saveRunPtr'],
-        ignoredPaths: ['calibration.__runPtr']
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+          'calibration/saveRunPtr',
+        ],
+        ignoredPaths: ['calibration.__runPtr'],
       },
     }),
 });

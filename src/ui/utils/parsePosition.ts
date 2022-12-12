@@ -1,5 +1,5 @@
 export function parsePosition(rawPosition: string) {
-    return rawPosition
+  return rawPosition
     .split(' ')
     .slice(0, 3)
     .map((x) => {

@@ -58,7 +58,7 @@ export class SerialHandler {
             if (e) {
               reject(e);
             } else {
-              p.setMaxListeners(0)
+              p.setMaxListeners(0);
               resolve(p);
             }
           }
@@ -126,7 +126,7 @@ export class SerialHandler {
     cmd: SERIAL_COMMAND,
     params: SERIAL_PARAMS
   ) {
-    console.log(cmd, params)
+    console.log(cmd, params);
     const c = SERIAL_COMMAND_MAP[cmd];
     if (!c) {
       throw new Error('Invalid serial command');
@@ -153,18 +153,20 @@ export class SerialHandler {
       })
     );
     if (cmd === SERIAL_COMMAND.HOME) {
-      await waitForOk(this.cncPort)
+      await waitForOk(this.cncPort);
     }
     const result = await readSerial(this.cncPort);
     this.send('serial/sendCommand', undefined, result);
   }
 
   closeAll() {
-    [this.cncPort, this.switchPort].forEach(port => {
+    [this.cncPort, this.switchPort].forEach((port) => {
       try {
-        port.close()
-      } catch { /* empty */ }
-    })
+        port.close();
+      } catch {
+        /* empty */
+      }
+    });
   }
 
   private onSwitchData() {

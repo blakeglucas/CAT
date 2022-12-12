@@ -30,8 +30,7 @@ export function CoordinateAxes({
   labelSpacing,
   fontSize,
 }: CoordinateAxesProps) {
-
-  const keyCounter = React.useRef(0)
+  const keyCounter = React.useRef(0);
 
   function buildAxis(
     start: number[],
@@ -51,26 +50,35 @@ export function CoordinateAxes({
     );
   }
 
-  const xAxis = React.useMemo(() => (
+  const xAxis = React.useMemo(
+    () => (
       <group>
         {buildAxis([0, 0, 0], [maxX, 0, 0], red, false)}
         {buildAxis([0, 0, 0], [minX, 0, 0], red, true)}
       </group>
-    ), [minX, maxX]);
+    ),
+    [minX, maxX]
+  );
 
-  const yAxis = React.useMemo(() => (
+  const yAxis = React.useMemo(
+    () => (
       <group>
         {buildAxis([0, 0, 0], [0, maxY, 0], green, false)}
         {buildAxis([0, 0, 0], [0, minY, 0], green, true)}
       </group>
-    ), [minY, maxY]);
+    ),
+    [minY, maxY]
+  );
 
-  const zAxis = React.useMemo(() => (
-    <group>
-      {maxZ && buildAxis([0, 0, 0], [0, 0, maxZ], blue, false)}
-      {minZ && buildAxis([0, 0, 0], [0, 0, minZ], blue, true)}
-    </group>
-  ), [minZ, maxZ])
+  const zAxis = React.useMemo(
+    () => (
+      <group>
+        {maxZ && buildAxis([0, 0, 0], [0, 0, maxZ], blue, false)}
+        {minZ && buildAxis([0, 0, 0], [0, 0, minZ], blue, true)}
+      </group>
+    ),
+    [minZ, maxZ]
+  );
 
   const labels = React.useMemo(() => {
     if (!showLabels) {

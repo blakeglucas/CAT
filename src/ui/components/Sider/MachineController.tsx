@@ -24,7 +24,7 @@ export function MachineController() {
   const homing = useSelector(
     (state: RootState) => state.machineControl.machineControl.homing
   );
-  const cncReady = useSelector(cncReadySelector)
+  const cncReady = useSelector(cncReadySelector);
   const dispatch = useDispatch();
 
   const [delta, setDelta] = React.useState(0.1);

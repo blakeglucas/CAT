@@ -4,12 +4,12 @@ import * as THREE from 'three';
 
 export class GCodeLoader extends THREE.Loader {
   splitLayer: boolean;
-  scaleZ: number
+  scaleZ: number;
 
   constructor(manager = THREE.DefaultLoadingManager, scaleZ = 1) {
     super(manager);
     this.splitLayer = false;
-    this.scaleZ = scaleZ
+    this.scaleZ = scaleZ;
   }
 
   load(url, onLoad, onProgress, onError) {
@@ -68,14 +68,14 @@ export class GCodeLoader extends THREE.Loader {
       layers.push(currentLayer);
     } //Create lie segment between p1 and p2
 
-    const scaleZ = this.scaleZ
+    const scaleZ = this.scaleZ;
 
     function addSegment(p1, p2) {
       if (Math.abs(p1.z) >= 2 * scaleZ) {
-        p1.z /= scaleZ
+        p1.z /= scaleZ;
       }
       if (Math.abs(p2.z) >= 2 * scaleZ) {
-         p2.z /= scaleZ
+        p2.z /= scaleZ;
       }
       if (currentLayer === undefined) {
         newLayer(p1);
@@ -124,7 +124,9 @@ export class GCodeLoader extends THREE.Loader {
         const line = {
           x: args.x !== undefined ? absolute(state.x, args.x) : state.x,
           y: args.y !== undefined ? absolute(state.y, args.y) : state.y,
-          z: (args.z !== undefined ? absolute(state.z, args.z) : state.z) * this.scaleZ,
+          z:
+            (args.z !== undefined ? absolute(state.z, args.z) : state.z) *
+            this.scaleZ,
           e: args.e !== undefined ? absolute(state.e, args.e) : state.e,
           f: args.f !== undefined ? absolute(state.f, args.f) : state.f,
         }; //Layer change detection is or made by watching Z, it's made by watching when we extrude at a new Z position

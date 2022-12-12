@@ -42,7 +42,7 @@ export const runAutoWorkOrigin = createAsyncThunk(
     while ((getState() as RootState).serial.runningCommand) {
       await sleep(500);
     }
-    ipcRenderer.off('serial/switchTrigger', onSwitchTrigger)
+    ipcRenderer.off('serial/switchTrigger', onSwitchTrigger);
     dispatch(autoWorkOriginActions.setRunning(false));
   }
 );

@@ -22,7 +22,7 @@ export type CalibrationState = {
   rowMap: number[][];
   heightMap: number[][][];
   completed: boolean;
-  __runPtr?: Promise<unknown>
+  __runPtr?: Promise<unknown>;
 };
 
 const initialState: CalibrationState = {
@@ -69,35 +69,35 @@ export const calibrationSlice = createSlice({
       state.heightMap = [];
     },
     setState(state, action: PayloadAction<CALIBRATION_STATE>) {
-      state.state = action.payload
+      state.state = action.payload;
     },
     setXDim(state, action: PayloadAction<number>) {
-      state.xDim = action.payload
+      state.xDim = action.payload;
     },
     setYDim(state, action: PayloadAction<number>) {
-      state.yDim = action.payload
+      state.yDim = action.payload;
     },
     setXPoints(state, action: PayloadAction<number>) {
-      state.xPoints = action.payload
+      state.xPoints = action.payload;
     },
     setYPoints(state, action: PayloadAction<number>) {
-      state.yPoints = action.payload
+      state.yPoints = action.payload;
     },
     setZStep(state, action: PayloadAction<number>) {
-      state.zStep = action.payload
+      state.zStep = action.payload;
     },
     setZTrav(state, action: PayloadAction<number>) {
-      state.zTrav = action.payload
+      state.zTrav = action.payload;
     },
     setCompleted(state, action: PayloadAction<boolean>) {
-      state.completed = action.payload
+      state.completed = action.payload;
     },
     setHeightMap(state, action: PayloadAction<number[][][]>) {
-      state.heightMap = action.payload
+      state.heightMap = action.payload;
     },
     saveRunPtr(state, action: PayloadAction<Promise<unknown>>) {
-      state.__runPtr = action.payload
-    }
+      state.__runPtr = action.payload;
+    },
   },
 });
 

@@ -17,7 +17,11 @@ export const startGetCoordinates = createAsyncThunk(
         number,
         number
       ];
-      if (!position.includes(null) && !position.includes(undefined) && !position.includes(NaN)) {
+      if (
+        !position.includes(null) &&
+        !position.includes(undefined) &&
+        !position.includes(NaN)
+      ) {
         dispatch(machineInfoActions.setCoordinates(position));
       }
     }

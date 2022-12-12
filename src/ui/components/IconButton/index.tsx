@@ -5,7 +5,10 @@ type Props = {
   children?: React.ReactNode;
 } & React.HTMLProps<HTMLButtonElement>;
 
-export const IconButton = React.forwardRef(function(props: Props, ref: React.Ref<HTMLButtonElement>) {
+export const IconButton = React.forwardRef(function (
+  props: Props,
+  ref: React.Ref<HTMLButtonElement>
+) {
   return (
     <button
       ref={ref}
@@ -18,4 +21,4 @@ export const IconButton = React.forwardRef(function(props: Props, ref: React.Ref
       {props.children}
     </button>
   );
-})
+});

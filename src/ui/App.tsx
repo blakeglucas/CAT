@@ -12,12 +12,12 @@ import MenuThunk from './store/thunks/Menu.thunk';
 export default function App() {
   const [siderWidth, setSiderWidth] = React.useState(400);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     // register menu handlers
-    dispatch(MenuThunk())
-  }, [])
+    dispatch(MenuThunk());
+  }, []);
 
   return (
     <>

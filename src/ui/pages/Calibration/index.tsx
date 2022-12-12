@@ -124,7 +124,7 @@ export function CalibrationPage() {
   function promptForConfirmation() {
     if (incompleteRun) {
       setShowResumeDialog(true);
-    } else if(incompleteRun || complete) {
+    } else if (incompleteRun || complete) {
       setShowConfirmDialog(true);
     }
   }
@@ -138,7 +138,7 @@ export function CalibrationPage() {
   }
 
   function stopCalibration() {
-    dispatch(safelyStopCalibration())
+    dispatch(safelyStopCalibration());
   }
 
   React.useEffect(() => {
@@ -151,9 +151,9 @@ export function CalibrationPage() {
 
   React.useEffect(() => {
     if (calState !== CALIBRATION_STATE.IDLE) {
-      ranCalRef.current = true
+      ranCalRef.current = true;
     }
-  }, [calState])
+  }, [calState]);
 
   return (
     <>
@@ -244,7 +244,7 @@ export function CalibrationPage() {
           isOpen={showResumeDialog}
           onDismiss={() => {
             setShowResumeDialog(false);
-            setShowConfirmDialog(true)
+            setShowConfirmDialog(true);
           }}
           runCalibration={() => {
             setShowResumeDialog(false);

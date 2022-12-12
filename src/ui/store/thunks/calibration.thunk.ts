@@ -12,8 +12,8 @@ import { parsePosition } from '../../utils/parsePosition';
 const { ipcRenderer } = window.require('electron');
 
 export type CalibrationThunkArgs = {
-  resume?: boolean
-} | null
+  resume?: boolean;
+} | null;
 
 const runCalibration = createAsyncThunk(
   'calibration/run',
@@ -27,18 +27,18 @@ const runCalibration = createAsyncThunk(
       return value.payload as string | undefined;
     }
 
-    console.log(args)
+    console.log(args);
 
-    dispatch(calibrationActions.setCompleted(false))
+    dispatch(calibrationActions.setCompleted(false));
     if (!args?.resume) {
-      dispatch(calibrationActions.resetX())
-      dispatch(calibrationActions.resetY())
-      dispatch(calibrationActions.resetRowMap())
-      dispatch(calibrationActions.resetHeightMap())
+      dispatch(calibrationActions.resetX());
+      dispatch(calibrationActions.resetY());
+      dispatch(calibrationActions.resetRowMap());
+      dispatch(calibrationActions.resetHeightMap());
     }
 
     const params = (getState() as RootState).calibration;
-    
+
     // Clam to 2 decimal places to avoid weird JS decimal error propagation
     const dX = Number((params.xDim / (params.xPoints - 1)).toFixed(2));
     const dY = Number((params.yDim / (params.yPoints - 1)).toFixed(2));
@@ -68,8 +68,8 @@ const runCalibration = createAsyncThunk(
 
     let cX = params.cX;
     let cY = params.cY;
-    
-    console.log(cX, cY)
+
+    console.log(cX, cY);
 
     while (cY <= params.yDim && !killed) {
       if (!args?.resume) {
@@ -98,63 +98,65 @@ const runCalibration = createAsyncThunk(
           SERIAL_COMMAND.GET_POSITION
         );
         console.log(rawPosition);
-        const position = parsePosition(rawPosition)
+        const position = parsePosition(rawPosition);
         dispatch(calibrationActions.appendToRowMap([cX, cY, position[2]]));
-        dispatch(calibrationActions.moveX(dX))
+        dispatch(calibrationActions.moveX(dX));
         cX += dX;
       }
       if (killed) {
         break;
       }
       cY += dY;
-      dispatch(calibrationActions.moveY(dY))
+      dispatch(calibrationActions.moveY(dY));
       const rowMap = (getState() as RootState).calibration.rowMap;
       dispatch(calibrationActions.appendToHeightMap(rowMap));
       if (killed) {
-        break
+        break;
       }
       if (cY > params.yDim) {
         await sendCommand(SERIAL_COMMAND.MOVE_REL, {
           z: 15,
         });
-        dispatch(calibrationActions.resetX())
-        dispatch(calibrationActions.resetY())
-        dispatch(calibrationActions.setCompleted(true))
+        dispatch(calibrationActions.resetX());
+        dispatch(calibrationActions.resetY());
+        dispatch(calibrationActions.setCompleted(true));
       } else {
-        dispatch(calibrationActions.resetX())
+        dispatch(calibrationActions.resetX());
         cX = 0;
         await sendCommand(SERIAL_COMMAND.MOVE_ABS, {
           z: params.zTrav,
         });
-        await sendCommand(SERIAL_COMMAND.MOVE_ABS, { y: cY })
+        await sendCommand(SERIAL_COMMAND.MOVE_ABS, { y: cY });
       }
     }
 
-    ipcRenderer.off('serial/switchTrigger', onSwitchTrigger)
+    ipcRenderer.off('serial/switchTrigger', onSwitchTrigger);
 
-    dispatch(calibrationActions.setState(CALIBRATION_STATE.IDLE))
+    dispatch(calibrationActions.setState(CALIBRATION_STATE.IDLE));
   }
 );
 
 export const safelyStartCalibration = createAsyncThunk(
   'calibration/safeStart',
   async (args: CalibrationThunkArgs, { dispatch }) => {
-    const runPtr = dispatch(runCalibration(args))
-    dispatch(calibrationActions.saveRunPtr(runPtr))
+    const runPtr = dispatch(runCalibration(args));
+    dispatch(calibrationActions.saveRunPtr(runPtr));
   }
-)
+);
 
 export const safelyStopCalibration = createAsyncThunk(
   'calibration/safeStop',
-  async (_, {getState}) => {
-    const runPtr = (getState() as RootState).calibration.__runPtr
+  async (_, { getState }) => {
+    const runPtr = (getState() as RootState).calibration.__runPtr;
     if (runPtr) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       runPtr.abort();
-      while ((getState() as RootState).calibration.state !== CALIBRATION_STATE.IDLE) {
-        await sleep(500)
+      while (
+        (getState() as RootState).calibration.state !== CALIBRATION_STATE.IDLE
+      ) {
+        await sleep(500);
       }
     }
   }
-)
+);

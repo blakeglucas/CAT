@@ -79,7 +79,7 @@ const CalibrationGrid: React.ForwardRefRenderFunction<
     controlsRef.current?.reset();
     setTimeout(() => {
       zoomToFit();
-    }, 100)
+    }, 100);
   }, [xDim, yDim, controlsRef.current]);
 
   return (

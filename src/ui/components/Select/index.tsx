@@ -20,7 +20,7 @@ export function Select(props: Props) {
       <label className='text-white text-xs mb-1'>{props.label}</label>
       <RDSelect
         dropdownGap={0}
-        style={{minHeight: '24px', border: 'none'}}
+        style={{ minHeight: '24px', border: 'none' }}
         {...props}
         dropdownHandleRenderer={HandleRenderer}
         noDataRenderer={NoDataRenderer}

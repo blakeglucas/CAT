@@ -5,7 +5,7 @@ interface Props {
   children?: React.ReactNode;
 }
 
-const headerHeight = 37
+const headerHeight = 37;
 
 export function Content(props: Props) {
   return (

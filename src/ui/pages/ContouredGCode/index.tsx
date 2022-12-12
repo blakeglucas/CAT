@@ -10,6 +10,9 @@ import { gcodeActions } from '../../store/reducers/GCode.reducer';
 import { Input } from '../../components/Input';
 import { contourGCode as contourGCodeThunk } from '../../store/thunks/GCode.thunk';
 import { useAllSnackbars } from '../../hooks/useSnackbar';
+import { Slider } from '../../components/Slider';
+
+import './slider-overrides.sass';
 
 export function ContouredGCodePage() {
   const cgcode = useSelector((state: RootState) => state.gcode.contoured);
@@ -31,6 +34,8 @@ export function ContouredGCodePage() {
     showError,
     closeError,
   ] = useAllSnackbars();
+
+  const [zScale, setZScale] = React.useState(10);
 
   const gcodeRef = React.useRef<GCodeRendererHandler>();
 
@@ -67,7 +72,7 @@ export function ContouredGCodePage() {
       <GCodeRenderer
         gcode={cgcode}
         ref={gcodeRef}
-        zScale={10}
+        zScale={zScale}
       />
       <div className='absolute flex flex-col items-start gap-y-2 top-8 left-16'>
         <Button onClick={() => gcodeRef.current?.resetView()}>
@@ -87,6 +92,14 @@ export function ContouredGCodePage() {
               disabled={running}>
               Refresh
             </Button>
+            <Slider
+              label={`Z Scale: x ${zScale}`}
+              className='zScale-slider'
+              value={zScale}
+              onChange={(value) => setZScale(value as number)}
+              step={1}
+              min={1}
+            />
           </>
         )}
       </div>

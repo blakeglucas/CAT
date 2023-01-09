@@ -1,6 +1,6 @@
 # CNC Auto-Leveling Tool (CAT)
 
-<img src="https://github.com/blakeglucas/CAT/blob/master/assets/icons/CATlogo.png?raw=true" width=200px />
+<img src="https://github.com/blakeglucas/CAT/blob/main/assets/icons/CATlogo.png?raw=true" width=200px />
 
 CNC Height Mapping is an external tool to "auto-level" CNC machines that do not come equipped with a height probe. This is particularly useful in the development of printed circuit boards on CNC machines like a Snapmaker.
 

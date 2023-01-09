@@ -1,0 +1,39 @@
+@tailwind base
+@tailwind components
+@tailwind utilities
+
+body
+  margin: 0 #{!important}
+  @apply bg-neutral-600
+
+.react-dropdown-select
+  @apply hover:border-none #{!important}
+  @apply bg-neutral-600 #{!important}
+  @apply focus:shadow-none #{!important}
+  @apply focus-within:shadow-none #{!important}
+  @apply focus-within:border-none #{!important}
+  @apply rounded-none #{!important}
+  @apply w-full #{!important}
+  @apply p-1 #{!important}
+  @apply text-xs #{!important}
+  @apply focus:outline-none #{!important}
+  @apply focus:outline-blue-400 #{!important}
+  @apply disabled:bg-neutral-600 #{!important}
+
+  &:disabled
+    opacity: 1 !important
+
+[data-reach-dialog-overlay]
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  overflow: auto
+
+[data-reach-dialog-content]
+  margin: 10vh auto
+  outline: none
+
+.cet-controls-container .cet-icon
+  @apply flex items-center justify-center #{!important}

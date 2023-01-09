@@ -42,7 +42,7 @@ const reducers = combineReducers({
     {
       key: 'machineControl',
       storage,
-      blacklist: ['machineInfo'],
+      blacklist: ['machineInfo', 'autoWorkOrigin.running'],
     },
     machineControlReducer
   ),

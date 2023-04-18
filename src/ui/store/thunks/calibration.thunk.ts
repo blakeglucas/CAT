@@ -6,7 +6,7 @@ import { sleep } from '../../utils/sleep';
 import {
   calibrationActions,
   CALIBRATION_STATE,
-} from '../reducers/Calibration.reducer';
+} from '../reducers/calibration.reducer';
 import { parsePosition } from '../../utils/parsePosition';
 
 const { ipcRenderer } = window.require('electron');

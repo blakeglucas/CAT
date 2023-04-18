@@ -13,6 +13,7 @@ export async function contourGCode(
         heightMap,
         targetZdepth,
       };
+      // TODO Scripts -> bin for non win32
       const child = spawnSync(
         `${path.join('venv', 'Scripts', 'python')} contourGCode.py`,
         {

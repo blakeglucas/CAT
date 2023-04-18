@@ -6,13 +6,12 @@ import { Input } from '../Input';
 import { Button } from '../Button';
 import { useDispatch, useSelector } from '../../store/hooks';
 import { RootState } from '../../store';
-import { serialActions } from '../../store/reducers/Serial.reducer';
-import * as serialThunks from '../../store/thunks/Serial.thunk';
+import { serialActions } from '../../store/reducers/serial.reducer';
+import * as serialThunks from '../../store/thunks/serial.thunk';
 import { UilCheckCircle, UilStopCircle } from '@iconscout/react-unicons';
 import { IconButton } from '../IconButton';
 import { AutoWorkOrigin } from './AutoWorkOrigin';
 import { MachineCoordinates } from './MachineCoordinates';
-import { getSerialPorts } from '../../store/thunks/Serial.thunk';
 import { MachineController } from './MachineController';
 
 function Divider() {
@@ -52,7 +51,7 @@ export function Sider(props: Props) {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(getSerialPorts());
+    dispatch(serialThunks.getSerialPorts());
   }, []);
 
   const unusedPorts = React.useMemo(

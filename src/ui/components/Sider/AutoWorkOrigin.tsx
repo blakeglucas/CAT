@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from '../../store/hooks';
 import { Button } from '../../components/Button';
 import { runAutoWorkOrigin as runAutoWorkOriginThunk } from '../../store/thunks/MachineControl.thunk/AutoWorkOrigin.thunk';
-import { serialReadySelector } from '../../store/reducers/Serial.reducer';
+import { serialReadySelector } from '../../store/reducers/serial.reducer';
 import { Input } from '../../components/Input';
 import { autoWorkOriginActions } from '../../store/reducers/MachineControl.reducer/AutoWorkOrigin.reducer';
 

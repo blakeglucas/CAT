@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { CALIBRATION_STATE } from './Calibration.reducer';
+import { CALIBRATION_STATE } from './calibration.reducer';
 
 export type SerialState = {
   cncPort?: string;

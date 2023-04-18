@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from '../../store/hooks';
 import { sendMachineCommand } from '../../store/thunks/MachineControl.thunk';
 import { SERIAL_COMMAND } from '../../../shared/marlin';
 import { RootState } from '../../store';
-import { cncReadySelector } from '../../store/reducers/Serial.reducer';
+import { cncReadySelector } from '../../store/reducers/serial.reducer';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 

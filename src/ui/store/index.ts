@@ -10,8 +10,8 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import calibrationReducer from './reducers/Calibration.reducer';
-import serialReducer from './reducers/Serial.reducer';
+import calibrationReducer from './reducers/calibration.reducer';
+import serialReducer from './reducers/serial.reducer';
 import machineControlReducer from './reducers/MachineControl.reducer';
 import gcodeReducer from './reducers/GCode.reducer';
 

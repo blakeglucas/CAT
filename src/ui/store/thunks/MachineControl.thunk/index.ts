@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { serialActions } from '../../../store/reducers/Serial.reducer';
+import { serialActions } from '../../../store/reducers/serial.reducer';
 import { SERIAL_COMMAND, SERIAL_PARAMS } from '../../../../shared/marlin';
 import { machineControlActions } from '../../../store/reducers/MachineControl.reducer';
 

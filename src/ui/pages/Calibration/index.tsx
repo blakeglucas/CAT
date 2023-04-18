@@ -6,19 +6,19 @@ import { Input } from '../../components/Input';
 import {
   calibrationActions,
   CALIBRATION_STATE,
-} from '../../store/reducers/Calibration.reducer';
+} from '../../store/reducers/calibration.reducer';
 import { Button } from '../../components/Button';
 import { Dialog, DialogProps } from '../../components/Dialog';
 import {
   CalibrationThunkArgs,
   safelyStartCalibration,
   safelyStopCalibration,
-} from '../../store/thunks/Calibration.thunk';
+} from '../../store/thunks/calibration.thunk';
 import CalibrationGrid, {
   CalibrationGridHandler,
 } from '../../components/CalibrationGrid';
 import { useHeaderHeight } from '../../hooks/useHeaderHeight';
-import { serialReadySelector } from '../../store/reducers/Serial.reducer';
+import { serialReadySelector } from '../../store/reducers/serial.reducer';
 
 function ConfirmDialog(
   props: Partial<DialogProps> & { runCalibration: () => void }

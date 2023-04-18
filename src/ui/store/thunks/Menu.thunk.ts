@@ -3,9 +3,9 @@ import { RootState } from '..';
 import {
   calibrationActions,
   CALIBRATION_STATE,
-} from '../reducers/Calibration.reducer';
+} from '../reducers/calibration.reducer';
 import { gcodeActions } from '../reducers/GCode.reducer';
-import { safelyStopCalibration } from './Calibration.thunk';
+import { safelyStopCalibration } from './calibration.thunk';
 
 const { ipcRenderer } = window.require('electron');
 

@@ -91,3 +91,4 @@ out/
 py/**/__pycache__
 py/venv
 py/__debug.py
+.cat_*
